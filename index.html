@@ -1,0 +1,1626 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Aplikasi Kurikulum Spensa — SMP Negeri 1 Wonosari</title>
+<style>
+:root{
+  --navy:#0e2a47; --navy2:#123a5f; --gold:#c9a227; --gold2:#e6c65c; --teal:#0e7c7b; --teal2:#12a19e;
+  --bg:#eef2f6; --card:#ffffff; --ink:#17242f; --muted:#5c6f7e; --line:#d8e1e8;
+  --ok:#1c7c43; --warn:#b26a00; --bad:#b3261e; --chip:#e8f0f5;
+  --shadow:0 2px 10px rgba(14,42,71,.10);
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0c141d; --card:#15222f; --ink:#e6eef5; --muted:#9db2c2; --line:#2a3d4e; --chip:#1d3247; --shadow:0 2px 10px rgba(0,0,0,.4); }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--teal2);outline-offset:1px}
+a{color:var(--teal)}
+h1,h2,h3{margin:0 0 8px}
+.small{font-size:12.5px;color:var(--muted)}
+.hidden{display:none!important}
+
+/* ===== Login / Sambutan ===== */
+#loginView{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 55%,var(--teal) 130%)}
+.login-card{background:var(--card);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.35);max-width:880px;width:100%;overflow:hidden}
+.login-head{background:var(--card);text-align:center;padding:26px 20px 8px}
+.logo-badge{width:92px;height:92px;margin:0 auto 10px;border-radius:20px;background:var(--navy);color:var(--gold2);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;border:3px solid var(--gold);letter-spacing:1px}
+.login-head .gov{font-weight:700;letter-spacing:.6px;color:var(--navy)}
+@media (prefers-color-scheme: dark){.login-head .gov{color:var(--gold2)}}
+.login-head h1{font-size:24px;color:var(--navy)}
+@media (prefers-color-scheme: dark){.login-head h1{color:var(--ink)}}
+.login-head .app-name{font-size:19px;font-weight:800;color:var(--teal);margin-top:2px}
+.welcome{background:var(--chip);margin:14px 20px 0;border-radius:12px;padding:14px 16px;text-align:center}
+.welcome .big{font-size:21px;font-weight:800;color:var(--navy)}
+@media (prefers-color-scheme: dark){.welcome .big{color:var(--gold2)}}
+.login-body{padding:18px 20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:680px){.login-body{grid-template-columns:1fr}}
+.login-body h3{font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.field input,.field select{width:100%}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:9px;padding:9px 15px;font-weight:600;background:var(--navy);color:#fff;transition:filter .15s}
+.btn:hover{filter:brightness(1.15)}
+.btn.gold{background:var(--gold);color:#231a00}
+.btn.teal{background:var(--teal)}
+.btn.ghost{background:transparent;color:var(--navy);border-color:var(--line)}
+@media (prefers-color-scheme: dark){.btn.ghost{color:var(--ink)}}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:7px}
+.btn.block{width:100%;justify-content:center}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.demo-btn{display:flex;width:100%;text-align:left;gap:10px;align-items:center;background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;color:var(--ink)}
+.demo-btn:hover{border-color:var(--gold)}
+.demo-btn .role{font-weight:700}
+.demo-btn .who{font-size:12.5px;color:var(--muted)}
+.err{background:#fdeceb;color:#7a1610;border:1px solid #f3b8b3;border-radius:8px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
+.sample-tag{display:inline-block;background:var(--gold);color:#231a00;font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;letter-spacing:.4px}
+
+/* ===== App layout ===== */
+#appView{display:flex;min-height:100vh}
+.sidebar{width:264px;flex:0 0 264px;background:var(--navy);color:#dbe7f2;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.sb-brand{padding:16px 16px 10px;display:flex;gap:11px;align-items:center;border-bottom:1px solid rgba(255,255,255,.14)}
+.sb-logo{width:46px;height:46px;flex:0 0 46px;border-radius:11px;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;border:2px solid var(--gold)}
+.sb-brand .t1{font-weight:800;font-size:14.5px;color:#fff;line-height:1.25}
+.sb-brand .t2{font-size:11.5px;color:var(--gold2)}
+.sb-user{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.14);font-size:13px}
+.sb-user .nm{font-weight:700;color:#fff}
+.mode-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;border-radius:20px;padding:2px 9px;margin-top:5px}
+.mode-badge.terpusat{background:var(--teal2);color:#04211f}
+.mode-badge.lokal{background:var(--gold);color:#231a00}
+nav.menu{flex:1;overflow-y:auto;padding:10px 8px}
+nav.menu button{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:transparent;border:0;color:#dbe7f2;padding:9px 11px;border-radius:9px;font-size:14px;margin-bottom:2px}
+nav.menu button:hover{background:rgba(255,255,255,.09)}
+nav.menu button.active{background:var(--gold);color:#231a00;font-weight:700}
+nav.menu .ic{width:21px;text-align:center;flex:0 0 21px}
+.sb-foot{padding:10px 12px;border-top:1px solid rgba(255,255,255,.14);display:flex;gap:8px}
+.sb-foot button{flex:1}
+.main{flex:1;min-width:0;padding:20px 22px 60px}
+.topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.topbar h2{font-size:21px;color:var(--navy)}
+@media (prefers-color-scheme: dark){.topbar h2{color:var(--gold2)}}
+.topbar .sub{color:var(--muted);font-size:13px;margin-top:-6px}
+.menu-toggle{display:none}
+@media (max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;z-index:60;transform:translateX(-105%);transition:transform .25s}
+  .sidebar.open{transform:none;box-shadow:0 0 60px rgba(0,0,0,.5)}
+  .menu-toggle{display:inline-flex}
+  .main{padding:14px 12px 50px}
+}
+
+/* ===== Components ===== */
+.grid{display:grid;gap:14px}
+.grid.c2{grid-template-columns:repeat(2,1fr)} .grid.c3{grid-template-columns:repeat(3,1fr)} .grid.c4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1000px){.grid.c4{grid-template-columns:repeat(2,1fr)}.grid.c3{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.grid.c2,.grid.c3,.grid.c4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:16px;box-shadow:var(--shadow)}
+.card h3{font-size:15.5px;color:var(--navy)}
+@media (prefers-color-scheme: dark){.card h3{color:var(--gold2)}}
+.stat .num{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1}
+@media (prefers-color-scheme: dark){.stat .num{color:#fff}}
+.stat .lbl{font-size:13px;color:var(--muted)}
+.stat .bar{height:8px;background:var(--chip);border-radius:6px;margin-top:8px;overflow:hidden}
+.stat .bar i{display:block;height:100%;background:var(--teal)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--navy);color:#fff;font-weight:600}
+tr:nth-child(even) td{background:rgba(120,150,175,.06)}
+.tbl-wrap{overflow-x:auto;border-radius:10px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:20px;padding:1px 9px}
+.tag.ok{background:#e2f3e7;color:var(--ok)} .tag.warn{background:#fdf0da;color:var(--warn)} .tag.bad{background:#fdeceb;color:var(--bad)} .tag.info{background:#e0f2f1;color:#065f5c}
+@media (prefers-color-scheme: dark){.tag.ok{background:#173d26}.tag.warn{background:#453310}.tag.bad{background:#471d1a}.tag.info{background:#0d3331;color:#7fd4cf}}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar .sp{flex:1}
+.note{background:#fdf6dd;border:1px solid var(--gold);border-radius:10px;padding:10px 13px;font-size:13.5px;margin-bottom:14px;color:#57460a}
+.sync-banner{border-radius:10px;padding:10px 13px;font-size:13.5px;margin-bottom:14px;background:#fdf0da;border:1px solid var(--gold);color:#57460a}
+@media (prefers-color-scheme: dark){.sync-banner{background:#453310;color:#ecd98f}}
+@media (prefers-color-scheme: dark){.note{background:#3a3010;color:#ecd98f}}
+.alert-bad{background:#fdeceb;border:1px solid #e79a94;color:#7a1610;border-radius:10px;padding:10px 13px;font-size:13.5px;margin-bottom:12px}
+@media (prefers-color-scheme: dark){.alert-bad{background:#471d1a;color:#f2b8b2}}
+.progress{height:9px;background:var(--chip);border-radius:6px;overflow:hidden;min-width:70px}
+.progress i{display:block;height:100%;background:var(--teal)}
+.chk{list-style:none;margin:0;padding:0}
+.chk li{padding:7px 0;border-bottom:1px dashed var(--line);display:flex;gap:9px;align-items:flex-start}
+.chk li:last-child{border-bottom:0}
+.chk .box{width:19px;height:19px;flex:0 0 19px;border-radius:5px;border:2px solid var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:#fff;margin-top:1px}
+.chk li.done .box{background:var(--ok);border-color:var(--ok)}
+.chk li.done .tx{color:var(--muted);text-decoration:line-through}
+select.inline, input.inline{padding:4px 6px;font-size:13px}
+.sched td{text-align:center;font-size:12px;min-width:74px;height:44px}
+.sched td.slot{cursor:pointer}
+.sched td.slot:hover{outline:2px solid var(--gold);outline-offset:-2px}
+.sched td.clash{background:#f8d7d3!important;color:#7a1610;font-weight:700}
+.sched .mapel{font-weight:700;display:block;font-size:12px}
+.sched .guru{color:var(--muted);font-size:11px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .dow{font-weight:700;text-align:center;font-size:12px;color:var(--muted);padding:4px 0}
+.cal .day{border:1px solid var(--line);border-radius:8px;min-height:56px;padding:4px 6px;font-size:12px;background:var(--card)}
+.cal .day .dnum{font-weight:700}
+.cal .day.libur{background:#fdeceb}.cal .day.ujian{background:#fdf0da}.cal .day.penting{background:#e0f2f1}
+@media (prefers-color-scheme: dark){.cal .day.libur{background:#471d1a}.cal .day.ujian{background:#453310}.cal .day.penting{background:#0d3331}}
+.cal .ev{display:block;font-size:10.5px;line-height:1.3;margin-top:2px}
+.modal-bg{position:fixed;inset:0;background:rgba(5,15,25,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--card);border-radius:14px;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal h3{color:var(--navy);font-size:17px}
+@media (prefers-color-scheme: dark){.modal h3{color:var(--gold2)}}
+.fmt-btn{display:flex;width:100%;gap:11px;align-items:center;text-align:left;background:var(--chip);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;color:var(--ink)}
+.fmt-btn:hover{border-color:var(--gold)}
+.fmt-btn .fi{font-size:20px}
+.fmt-btn b{display:block}.fmt-btn span{font-size:12.5px;color:var(--muted)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.form-grid{grid-template-columns:1fr}}
+.form-grid .full{grid-column:1/-1}
+.form-grid label{font-size:13px;font-weight:600;display:block;margin-bottom:3px}
+.form-grid input,.form-grid select,.form-grid textarea{width:100%}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;z-index:200;box-shadow:0 8px 30px rgba(0,0,0,.35);font-size:14px;max-width:92vw;text-align:center}
+.kop{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:14px;color:#000}
+.kop .l1{font-size:15px;letter-spacing:.5px}.kop .l2{font-size:16px;font-weight:700}.kop .l3{font-size:20px;font-weight:800}.kop .l4{font-size:11.5px}
+#printArea{display:none}
+@media print{
+  body>*{display:none!important}
+  #printArea{display:block!important;color:#000;background:#fff;font-size:12.5px}
+  #printArea table th{background:#0e2a47!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{margin:14mm}
+}
+.doc-title{text-align:center;font-weight:800;font-size:15px;margin:6px 0 2px;color:#000}
+.doc-sub{text-align:center;font-size:12.5px;margin-bottom:12px;color:#000}
+.ttd{display:flex;justify-content:space-between;margin-top:28px;color:#000;font-size:12.5px}
+.ttd .col{width:45%}
+.ttd .nm{margin-top:58px;font-weight:700;text-decoration:underline}
+</style>
+</head>
+<body>
+
+<!-- ================= SAMBUTAN & LOGIN ================= -->
+<div id="loginView">
+  <div class="login-card">
+    <div class="login-head">
+      <div class="logo-badge">S1</div>
+      <div class="gov">PEMERINTAH KABUPATEN GUNUNGKIDUL</div>
+      <div class="gov">DINAS PENDIDIKAN</div>
+      <h1>SMP NEGERI 1 WONOSARI</h1>
+      <div class="app-name">Aplikasi Kurikulum Spensa</div>
+      <div class="small">Urusan Kurikulum &amp; Akademik — Tahun Ajaran <span id="loginTA">2026/2027</span></div>
+    </div>
+    <div class="welcome">
+      <div class="big">Selamat Datang</div>
+      <div class="small">Silakan masuk sesuai peran Anda: Wakakur, Kepala Sekolah, atau Guru.</div>
+    </div>
+    <div class="login-body">
+      <div>
+        <h3>Masuk dengan Akun</h3>
+        <div id="loginErr"></div>
+        <div class="field"><label for="liUser">Nama Pengguna</label><input id="liUser" autocomplete="username" placeholder="mis. sulis"></div>
+        <div class="field"><label for="liPass">Kata Sandi</label><input id="liPass" type="password" autocomplete="current-password" placeholder="Kata sandi Anda"></div>
+        <button class="btn gold block" id="btnLogin">Masuk</button>
+        <p class="small" style="margin-top:10px">Wakakur: <b>sulis</b> · Kepala Sekolah: <b>kepsek</b> · Guru: nama depan guru (mis. <b>ririn</b>). Untuk percobaan, gunakan tombol <b>Masuk Cepat</b> — setiap pemilik akun membuat kata sandinya sendiri setelah masuk pertama kali lewat tombol <b>Ganti Sandi</b>.</p>
+      </div>
+      <div>
+        <h3>Masuk Cepat (Demo Sekali Klik)</h3>
+        <button class="demo-btn" data-demo="wakakur"><span style="font-size:20px">🗂️</span><span><span class="role">Wakakur / Admin Kurikulum</span><br><span class="who">Sulistyana, S.Pd., M.Pd. — kelola semua menu</span></span></button>
+        <button class="demo-btn" data-demo="kepsek"><span style="font-size:20px">🏫</span><span><span class="role">Kepala Sekolah</span><br><span class="who">Monitoring &amp; pengesahan (hanya-lihat)</span></span></button>
+        <button class="demo-btn" data-demo="guru"><span style="font-size:20px">👩‍🏫</span><span><span class="role">Guru</span><br><span class="who">Contoh: Ririn Aprianita — Matematika (jadwal, SKBM, piket, perangkat ajar sendiri)</span></span></button>
+        <p class="small"><span class="sample-tag">DATA CONTOH</span> Aplikasi terisi data awal 37 guru &amp; 21 kelas SMP Negeri 1 Wonosari agar bisa langsung dicoba. Semua perubahan tersimpan di perangkat ini (mode lokal) dan dapat dihubungkan ke server sekolah lewat Pengaturan Koneksi.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APLIKASI ================= -->
+<div id="appView" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">S1</div>
+      <div><div class="t1">Kurikulum Spensa</div><div class="t2">SMP Negeri 1 Wonosari</div></div>
+    </div>
+    <div class="sb-user">
+      <div class="nm" id="sbName">—</div>
+      <div id="sbRole" style="color:#bcd2e6;font-size:12px">—</div>
+      <span class="mode-badge lokal" id="modeBadge">MODE LOKAL</span>
+    </div>
+    <nav class="menu" id="menuNav"></nav>
+    <div class="sb-foot">
+      <button class="btn ghost sm" id="btnGantiPass" style="color:#dbe7f2;border-color:rgba(255,255,255,.35)">Ganti Sandi</button>
+      <button class="btn gold sm" id="btnLogout">Keluar</button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <button class="btn ghost sm menu-toggle" id="btnMenu">☰ Menu</button>
+        <div><h2 id="pageTitle">Dashboard</h2><div class="sub" id="pageSub"></div></div>
+      </div>
+      <div class="small" id="topInfo"></div>
+    </div>
+    <div id="syncBanner" class="sync-banner hidden"></div>
+    <div id="pageBody"></div>
+  </main>
+</div>
+
+<div id="modalRoot"></div>
+<div id="printArea"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   APLIKASI KURIKULUM SPENSA — SMP Negeri 1 Wonosari
+   Satu berkas mandiri: tanpa font/URL eksternal.
+   Penyimpanan: localStorage perangkat + pola koneksi API terpusat
+   (URL spreadsheet/PHP) sama seperti LMS Terpadu & Sarpras.
+   ============================================================ */
+var LS_KEY = "kurikulum_spensa_v1";
+var DEFAULT_API_URL = "https://script.google.com/macros/s/AKfycbz8vjFjMkY1yqvPeFZ6ZzfuK-AGqg99J2vSnLNKlNsUidAzrs-DPqRNLvoJbKFqO0gg/exec";
+
+/* ---------- Data awal: 37 guru asli (dari data LMS Terpadu) ---------- */
+var GURU_AWAL = [
+ ["Sulistyana, S.Pd., M.Pd","Matematika","sulis"],
+ ["Agung Purnomo, S.S.","Bahasa Jawa","agung"],
+ ["Agus Maryanto, S.Pd. M.Pd","","agusm"],
+ ["Alifa Pertiwi, S.Pd.","IPA","alifa"],
+ ["Ambar Sulistyowati, S.Pd.I.","Pend. Agama Islam","ambar"],
+ ["Ari Purwantiningsih, S.Pd.K","Pend. Agama Kristen","arip"],
+ ["Ari Sulistya, S.Pd.","Bahasa Inggris","aris"],
+ ["Asih Suwardiningrum, M.Pd.","Bahasa Indonesia","asih"],
+ ["Bernadetta Pramudyastuti, S.Pd.M.Pd.","Pendidikan Pancasila","bernadetta"],
+ ["Christina Ari Dwi Astuti, S.Pd.","Bahasa Inggris","christina"],
+ ["Dani Winarsih, S.Pd.Ek.","IPS","dani"],
+ ["Dari Setyowati, S.Pd.","Seni Musik","dari"],
+ ["Detok Wijayanto, S.Pd., M.Pd.","Bahasa Indonesia","detok"],
+ ["Doni Septiantoro, S.Pd.","PJOK","doni"],
+ ["Drs. Agus Suhartoyo","Matematika","aguss"],
+ ["Fisilia Ari Kuswanti, S.Pd.","Pend. Agama Katolik","fisilia"],
+ ["Fuad Ihsanudin Nugroho, S.Ag., M.S.I.","Pend. Agama Islam","fuad"],
+ ["Ida Susilawati, S.Pd.Si.","IPA","ida"],
+ ["Iin Indriyati, S.Pd., M.Pd.","IPA","iin"],
+ ["Indri Hapsari, S.Pd.T.","Prakarya","indri"],
+ ["Jaka Urip Santosa, S.Pd.","Seni Rupa","jaka"],
+ ["Liliek Lestari, S.Pd.","Bahasa Indonesia","liliek"],
+ ["Lina Permanasari, S.S.","Bahasa Inggris","lina"],
+ ["Oky Pamungkas, M.Pd.","IPA","oky"],
+ ["Puji Rahmat, S.Pd.I","Pend. Agama Islam","puji"],
+ ["Rahma Fitria Alfiana, S.pd.","PJOK","rahma"],
+ ["Ratna Amalia Sangidu, S.Pd.","Informatika","ratna"],
+ ["Rini Harjanti, M.Pd.","IPS","rini"],
+ ["Ririn Aprianita, S.Pd.Si., M.Pd.","Matematika","ririn"],
+ ["Sri Rahayu, S.Pd.","Bahasa Indonesia","sri"],
+ ["Sri Widyaningsih, S.Pd.","PJOK","sriw"],
+ ["Suswiyati, M.Pd.","Matematika","suswiyati"],
+ ["Trianjar Priyanta, S.Pd., M.Pd.","Bahasa Jawa","trianjar"],
+ ["Yati Siti Alinah, M.Pd.","IPS","yati"],
+ ["Yesi Adistiya Larasati, S.Pd.","Pendidikan Pancasila","yesi"],
+ ["Afreilya Nisa Nur Rochmah, S.Pd.","BK","afreilya"],
+ ["Nurani Indrasmiyati, S.Psi.","BK","nurani"]
+];
+var KELAS = [];
+[7,8,9].forEach(function(t){ ["A","B","C","D","E","F","G"].forEach(function(h){ KELAS.push(t+h); }); });
+
+/* Struktur Kurikulum Merdeka SMP — JP per pekan per tingkat [7,8,9] */
+var STRUKTUR_AWAL = [
+ ["Pend. Agama Islam",3,3,3,"Intrakurikuler"],
+ ["Pend. Agama Kristen",3,3,3,"Intrakurikuler"],
+ ["Pend. Agama Katolik",3,3,3,"Intrakurikuler"],
+ ["Pendidikan Pancasila",3,3,3,"Intrakurikuler"],
+ ["Bahasa Indonesia",6,6,6,"Intrakurikuler"],
+ ["Matematika",5,5,5,"Intrakurikuler"],
+ ["IPA",5,5,5,"Intrakurikuler"],
+ ["IPS",4,4,4,"Intrakurikuler"],
+ ["Bahasa Inggris",4,4,4,"Intrakurikuler"],
+ ["PJOK",3,3,3,"Intrakurikuler"],
+ ["Seni Musik",2,2,2,"Intrakurikuler"],
+ ["Seni Rupa",2,2,2,"Intrakurikuler"],
+ ["Prakarya",2,2,2,"Intrakurikuler"],
+ ["Informatika",2,2,2,"Intrakurikuler"],
+ ["Bahasa Jawa",2,2,2,"Muatan Lokal"],
+ ["BK",1,1,1,"Layanan"],
+ ["Kokurikuler / P5",2,2,2,"Kokurikuler"],
+ ["Ekstrakurikuler (wajib/pramuka)",2,2,2,"Ekstrakurikuler"]
+];
+var MAPEL_SINGKAT = {"Pend. Agama Islam":"PAI","Pend. Agama Kristen":"PA Kristen","Pend. Agama Katolik":"PA Katolik","Pendidikan Pancasila":"Pancasila","Bahasa Indonesia":"B. Indonesia","Matematika":"Matematika","IPA":"IPA","IPS":"IPS","Bahasa Inggris":"B. Inggris","PJOK":"PJOK","Seni Musik":"Seni Musik","Seni Rupa":"Seni Rupa","Prakarya":"Prakarya","Informatika":"Informatika","Bahasa Jawa":"B. Jawa","BK":"BK"};
+var HARI = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+var BULAN = ["Juli","Agustus","September","Oktober","November","Desember","Januari","Februari","Maret","April","Mei","Juni"];
+var DOK_PERANGKAT = ["CP/ATP","Prota","Promes","Modul Ajar","KKTP"];
+</script>
+<script>
+"use strict";
+/* ---------- Pembentuk data awal ---------- */
+function uid(p){ return p + Math.random().toString(36).slice(2,9); }
+function guruByUsername(db,u){ for(var i=0;i<db.guru.length;i++) if(db.guru[i].username===u) return db.guru[i]; return null; }
+function guruById(db,id){ for(var i=0;i<db.guru.length;i++) if(db.guru[i].id===id) return db.guru[i]; return null; }
+function mapelGuru(db,mapel){ return db.guru.filter(function(g){return g.mapel===mapel;}); }
+
+function buatSKBM(db){
+  /* Plotting otomatis: setiap mapel di struktur diampu guru mapel itu secara bergiliran merata antarrombel. */
+  var skbm=[], hitung={};
+  db.guru.forEach(function(g){ hitung[g.id]=0; });
+  var agamaKhusus = {"Pend. Agama Kristen":["7A","8A","9A"], "Pend. Agama Katolik":["7A","8A","9A"]};
+  STRUKTUR_AWAL.forEach(function(s){
+    var mapel=s[0]; if(mapel.indexOf("Kokurikuler")===0 || mapel.indexOf("Ekstrakurikuler")===0) return;
+    var daftar = mapelGuru(db,mapel); if(!daftar.length) return;
+    KELAS.forEach(function(k){
+      if(agamaKhusus[mapel] && agamaKhusus[mapel].indexOf(k)<0) return;
+      var tingkat = parseInt(k.charAt(0),10);
+      var jp = tingkat===7?s[1]:(tingkat===8?s[2]:s[3]);
+      var pilih = daftar[0];
+      daftar.forEach(function(g){ if(hitung[g.id]<hitung[pilih.id]) pilih=g; });
+      hitung[pilih.id]+=jp;
+      skbm.push({id:uid("sk"), guruId:pilih.id, mapel:mapel, kelas:k, jp:jp});
+    });
+  });
+  /* Tugas tambahan contoh: wali kelas dihitung 2 JP ekuivalen dicatat terpisah di database rombel. */
+  return skbm;
+}
+function buatJadwal(db){
+  /* Susun jadwal greedy: blok 2 JP (sisa 1 JP), hindari guru bentrok & slot kelas ganda. */
+  var jadwal = {}; KELAS.forEach(function(k){ jadwal[k]={}; });
+  var guruSibuk = {}; /* kunci: guruId|hari|jam = true */
+  var perKelas = {};
+  db.skbm.forEach(function(s){ (perKelas[s.kelas]=perKelas[s.kelas]||[]).push(s); });
+  KELAS.forEach(function(k){
+    var blok=[];
+    (perKelas[k]||[]).forEach(function(s){
+      var sisa=s.jp;
+      while(sisa>=2){ blok.push({guruId:s.guruId,mapel:s.mapel,jp:2}); sisa-=2; }
+      if(sisa===1) blok.push({guruId:s.guruId,mapel:s.mapel,jp:1});
+    });
+    /* Blok besar dulu agar mudah ditempatkan */
+    blok.sort(function(a,b){return b.jp-a.jp;});
+    blok.forEach(function(b){
+      var terpasang=false;
+      for(var h=0;h<HARI.length && !terpasang;h++){
+        for(var j=1;j<=10-b.jp+1 && !terpasang;j++){
+          var bebas=true;
+          for(var x=0;x<b.jp;x++){
+            var key=k+"|"+h+"|"+(j+x), gk=b.guruId+"|"+h+"|"+(j+x);
+            if(jadwal[k][key] || guruSibuk[gk]){ bebas=false; break; }
+          }
+          if(bebas){
+            for(var y=0;y<b.jp;y++){
+              jadwal[k][k+"|"+h+"|"+(j+y)]={guruId:b.guruId,mapel:b.mapel};
+              guruSibuk[b.guruId+"|"+h+"|"+(j+y)]=true;
+            }
+            terpasang=true;
+          }
+        }
+      }
+      /* Cadangan: blok 2 JP yang gagal ditempatkan dipecah menjadi 2 slot 1 JP */
+      if(!terpasang && b.jp===2){
+        var sisaBlok=2;
+        for(var h2=0;h2<HARI.length && sisaBlok>0;h2++){
+          for(var j2=0;j2<10 && sisaBlok>0;j2++){
+            var key2=k+"|"+h2+"|"+j2, gk2=b.guruId+"|"+h2+"|"+j2;
+            if(!jadwal[k][key2] && !guruSibuk[gk2]){
+              jadwal[k][key2]={guruId:b.guruId,mapel:b.mapel};
+              guruSibuk[gk2]=true; sisaBlok--;
+            }
+          }
+        }
+      }
+    });
+  });
+  return jadwal;
+}
+function seedData(){
+  var db = {};
+  db.pengaturan = {
+    namaSekolah:"SMP Negeri 1 Wonosari", npsn:"20401395 (contoh — sesuaikan di Pengaturan)",
+    alamat:"Jl. Colombo No. 1, Wonosari, Gunungkidul, DI Yogyakarta (contoh)",
+    kepsek:"Kepala Sekolah (isi nama di Pengaturan)", nipKepsek:"",
+    wakakur:"Sulistyana, S.Pd., M.Pd.", nipWakakur:"",
+    tahunAjaran:"2026/2027", semester:"Ganjil",
+    koneksi:{ mode:"terpusat", url:DEFAULT_API_URL }
+  };
+  db.guru = GURU_AWAL.map(function(g,i){ return {id:"g"+(i+1), nama:g[0], mapel:g[1], username:g[2], nip:""}; });
+  /* Wali kelas: 21 guru pertama yang berbeda secara bergiliran */
+  var waliPool = db.guru.filter(function(g){return g.mapel!=="";});
+  db.rombel = KELAS.map(function(k,i){ return {kelas:k, waliId:waliPool[i%waliPool.length].id, jumlahSiswa:32}; });
+  db.struktur = STRUKTUR_AWAL.map(function(s){ return {id:uid("st"), mapel:s[0], jp7:s[1], jp8:s[2], jp9:s[3], jenis:s[4]}; });
+  db.skbm = buatSKBM(db);
+  db.skbmSah = {oleh:"", tanggal:"", status:"Belum disahkan"};
+  db.jadwal = buatJadwal(db);
+  db.kalender = [
+    {id:uid("k"), tanggal:"2026-07-13", nama:"Hari pertama masuk semester ganjil", jenis:"penting"},
+    {id:uid("k"), tanggal:"2026-07-13", nama:"MPLS peserta didik baru (13–15 Juli)", jenis:"penting"},
+    {id:uid("k"), tanggal:"2026-08-17", nama:"Libur: Hari Kemerdekaan RI", jenis:"libur"},
+    {id:uid("k"), tanggal:"2026-09-21", nama:"Sumatif Tengah Semester (STS) Ganjil (21–26 Sep)", jenis:"ujian"},
+    {id:uid("k"), tanggal:"2026-11-30", nama:"Sumatif Akhir Semester (SAS) Ganjil (30 Nov–5 Des)", jenis:"ujian"},
+    {id:uid("k"), tanggal:"2026-12-21", nama:"Libur semester ganjil (21 Des–2 Jan)", jenis:"libur"},
+    {id:uid("k"), tanggal:"2027-01-04", nama:"Hari pertama masuk semester genap", jenis:"penting"},
+    {id:uid("k"), tanggal:"2027-03-08", nama:"Sumatif Tengah Semester (STS) Genap (8–13 Mar)", jenis:"ujian"},
+    {id:uid("k"), tanggal:"2027-04-19", nama:"Ujian Sekolah kelas 9 (19–24 Apr)", jenis:"ujian"},
+    {id:uid("k"), tanggal:"2027-06-07", nama:"Sumatif Akhir Semester (SAS) Genap (7–12 Jun)", jenis:"ujian"},
+    {id:uid("k"), tanggal:"2027-06-21", nama:"Libur akhir tahun ajaran", jenis:"libur"}
+  ];
+  /* Pekan efektif contoh per bulan: [total pekan, pekan tidak efektif] */
+  db.pekan = {
+    "Ganjil":[["Juli",4,1],["Agustus",4,0],["September",5,1],["Oktober",4,0],["November",5,0],["Desember",4,2]],
+    "Genap":[["Januari",4,0],["Februari",4,0],["Maret",5,1],["April",4,1],["Mei",4,0],["Juni",5,2]]
+  };
+  db.piket = HARI.map(function(h,i){
+    return {hari:h, guruIds:[db.guru[(i*3)%37].id, db.guru[(i*3+1)%37].id, db.guru[(i*3+2)%37].id]};
+  });
+  db.upacara = [
+    {id:uid("u"), tanggal:"Senin (bergilir)", petugas:"Pembina: guru piket Senin", kelasPetugas:"9A"},
+    {id:uid("u"), tanggal:"Hari besar nasional", petugas:"Sesuai SK panitia hari besar", kelasPetugas:"Bergilir 7–9"}
+  ];
+  db.inval = [
+    {id:uid("iv"), tanggal:"—", guruAbsen:"(isi saat ada guru berhalangan)", penggantiId:db.guru[0].id, kelas:"—", jam:"—", keterangan:"Contoh baris — hapus/ganti saat dipakai"}
+  ];
+  db.ekskul = [
+    {id:uid("e"), nama:"Pramuka (wajib)", pembinaId:db.guru[13].id, hari:"Jumat", jam:"15.00–17.00", tempat:"Lapangan sekolah", peserta:"Kelas 7–8"},
+    {id:uid("e"), nama:"Seni Musik & Karawitan", pembinaId:db.guru[11].id, hari:"Rabu", jam:"15.00–16.30", tempat:"Ruang Seni", peserta:"Kelas 7–9"},
+    {id:uid("e"), nama:"Karya Ilmiah Remaja (KIR)", pembinaId:db.guru[18].id, hari:"Selasa", jam:"15.00–16.30", tempat:"Lab IPA", peserta:"Kelas 7–9"},
+    {id:uid("e"), nama:"Olahraga (Futsal)", pembinaId:db.guru[30].id, hari:"Kamis", jam:"15.00–17.00", tempat:"Lapangan sekolah", peserta:"Kelas 7–9"},
+    {id:uid("e"), nama:"Komputer & Robotik", pembinaId:db.guru[26].id, hari:"Sabtu", jam:"08.00–10.00", tempat:"Lab Komputer", peserta:"Kelas 7–9"}
+  ];
+  db.p5 = [
+    {id:uid("p"), tema:"Gaya Hidup Berkelanjutan", dimensi:"Beriman & bertakwa, Gotong royong, Kreatif", koordinatorId:db.guru[17].id, tingkat:"7", jadwalBlok:"Blok 1: Sep–Okt 2026", fasilitator:"Wali kelas 7 + guru IPA"},
+    {id:uid("p"), tema:"Kearifan Lokal: Gunungkidul", dimensi:"Gotong royong, Bernalar kritis, Mandiri", koordinatorId:db.guru[10].id, tingkat:"8", jadwalBlok:"Blok 1: Sep–Okt 2026", fasilitator:"Wali kelas 8 + guru IPS/B. Jawa"},
+    {id:uid("p"), tema:"Suara Demokrasi", dimensi:"Berkebinekaan global, Mandiri, Bernalar kritis", koordinatorId:db.guru[8].id, tingkat:"9", jadwalBlok:"Blok 1: Okt–Nov 2026", fasilitator:"Wali kelas 9 + guru Pancasila"}
+  ];
+  /* Perangkat ajar: status 0=Belum,1=Masuk,2=Terverifikasi — pola contoh berlabel */
+  db.perangkat = {};
+  db.guru.forEach(function(g,i){
+    db.perangkat[g.id] = {};
+    DOK_PERANGKAT.forEach(function(d,di){
+      db.perangkat[g.id][d] = ((i+di) % 5 === 0) ? 0 : (((i*2+di) % 3 === 0) ? 1 : 2);
+    });
+  });
+  db.supervisi = [
+    {id:uid("s"), tanggal:"2026-09-14", guruId:db.guru[28].id, kelas:"9A", aspek:"Pelaksanaan pembelajaran", supervisor:"Wakakur", hasil:"Baik — pengelolaan kelas efektif", tindakLanjut:"Berbagi praktik baik di MGMP sekolah"},
+    {id:uid("s"), tanggal:"2026-09-21", guruId:db.guru[3].id, kelas:"8C", aspek:"Perangkat ajar", supervisor:"Kepala Sekolah", hasil:"Modul ajar perlu dilengkapi asesmen formatif", tindakLanjut:"Revisi modul ajar, dicek ulang Oktober"},
+    {id:uid("s"), tanggal:"2026-10-05", guruId:db.guru[23].id, kelas:"7B", aspek:"Pelaksanaan pembelajaran", supervisor:"Wakakur", hasil:"Cukup — diferensiasi belum tampak", tindakLanjut:"Pendampingan penyusunan RPM"}
+  ];
+  db.ujian = [
+    {id:uid("uj"), nama:"Sumatif Tengah Semester (STS) Ganjil", tanggal:"21–26 September 2026", ketua:"Sulistyana, S.Pd., M.Pd.", sekretaris:"Ririn Aprianita, S.Pd.Si., M.Pd.", ruang:"21 ruang kelas", pengawas:"Seluruh guru bergiliran sesuai jadwal pengawas",
+     cek:{soal:true, penggandaan:true, beritaAcara:false, daftarHadir:true, denah:false}},
+    {id:uid("uj"), nama:"Sumatif Akhir Semester (SAS) Ganjil", tanggal:"30 November – 5 Desember 2026", ketua:"Sulistyana, S.Pd., M.Pd.", sekretaris:"Ida Susilawati, S.Pd.Si.", ruang:"21 ruang kelas", pengawas:"Seluruh guru bergiliran sesuai jadwal pengawas",
+     cek:{soal:false, penggandaan:false, beritaAcara:false, daftarHadir:false, denah:false}},
+    {id:uid("uj"), nama:"Ujian Sekolah Kelas 9", tanggal:"19–24 April 2027", ketua:"Sulistyana, S.Pd., M.Pd.", sekretaris:"Asih Suwardiningrum, M.Pd.", ruang:"7 ruang kelas 9 + cadangan", pengawas:"Guru kelas 7 & 8 sesuai SK",
+     cek:{soal:false, penggandaan:false, beritaAcara:false, daftarHadir:false, denah:false}}
+  ];
+  db.proker = [
+    {id:uid("pr"), kegiatan:"Penyusunan kalender pendidikan & pekan efektif", bulan:"Juli 2026", status:"Selesai", ket:"Ditetapkan awal tahun ajaran"},
+    {id:uid("pr"), kegiatan:"Plotting SKBM & penyusunan jadwal pelajaran", bulan:"Juli 2026", status:"Selesai", ket:"SKBM menunggu pengesahan Kepsek"},
+    {id:uid("pr"), kegiatan:"Verifikasi perangkat ajar semester ganjil", bulan:"Agustus 2026", status:"Berlangsung", ket:"Target 100% akhir Agustus"},
+    {id:uid("pr"), kegiatan:"Supervisi akademik tahap 1", bulan:"September–Oktober 2026", status:"Berlangsung", ket:"12 guru per tahap"},
+    {id:uid("pr"), kegiatan:"Persiapan & pelaksanaan STS Ganjil", bulan:"September 2026", status:"Berlangsung", ket:"Panitia STS terbentuk"},
+    {id:uid("pr"), kegiatan:"Persiapan & pelaksanaan SAS Ganjil", bulan:"November–Desember 2026", status:"Belum", ket:""},
+    {id:uid("pr"), kegiatan:"Refleksi & laporan kurikulum semester ganjil", bulan:"Desember 2026", status:"Belum", ket:""}
+  ];
+  db.rapat = [
+    {id:uid("rp"), tanggal:"2026-07-10", agenda:"Rapat awal tahun ajaran: pembagian tugas & jadwal", notulen:"Disepakati struktur kurikulum TA 2026/2027 dan plotting awal SKBM.", peserta:"Seluruh guru & tendik"}
+  ];
+  db.catatan = "Catatan cepat Wakakur: lengkapi verifikasi perangkat ajar guru yang masih berstatus Masuk; jadwal kelas 9 diprioritaskan tidak bentrok dengan try out.";
+  /* Akun tanpa kata sandi bawaan: sandi dibuat sendiri oleh pemilik akun
+     (tersimpan sebagai hash di perangkat, tidak ada sandi tertulis di kode). */
+  db.users = [
+    {username:"sulis", passHash:"", peran:"wakakur", nama:"Sulistyana, S.Pd., M.Pd.", guruId:"g1"},
+    {username:"kepsek", passHash:"", peran:"kepsek", nama:"Kepala Sekolah", guruId:""}
+  ];
+  db.guru.forEach(function(g){
+    if(g.username!=="sulis") db.users.push({username:g.username, passHash:"", peran:"guru", nama:g.nama, guruId:g.id});
+  });
+  return db;
+}
+
+/* ---------- State ---------- */
+var DB = null;
+function simpanLokal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){} }
+function saveDB(){ simpanLokal(); updateModeBadge(); if(typeof jadwalkanSinkron==="function") jadwalkanSinkron(); }
+function loadDB(){
+  try{ var raw = localStorage.getItem(LS_KEY); if(raw){ DB = JSON.parse(raw); return; } }catch(e){}
+  DB = seedData(); saveDB();
+}
+var SESI = null; /* {username, peran, nama, guruId} */
+try{ var sRaw = sessionStorage.getItem("kurikulum_spensa_sesi"); if(sRaw) SESI = JSON.parse(sRaw); }catch(e){}
+function setSesi(u){ SESI=u; try{ if(u) sessionStorage.setItem("kurikulum_spensa_sesi", JSON.stringify(u)); else sessionStorage.removeItem("kurikulum_spensa_sesi"); }catch(e){} }
+function isWakakur(){ return SESI && SESI.peran==="wakakur"; }
+function canEdit(){ return isWakakur(); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function toast(msg){ var t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(function(){ t.remove(); },2600); }
+function totalJP(guruId){ var t=0; DB.skbm.forEach(function(s){ if(s.guruId===guruId) t+=s.jp; }); return t; }
+function namaGuru(id){ var g=guruById(DB,id); return g?g.nama:"—"; }
+function updateModeBadge(){
+  var b=document.getElementById("modeBadge"); if(!b||!DB) return;
+  var tp = (typeof SYNC!=="undefined" && SYNC.aktif);
+  b.textContent = tp ? "MODE TERPUSAT" : "MODE LOKAL";
+  b.className = "mode-badge " + (tp ? "terpusat" : "lokal");
+}
+</script>
+<script>
+"use strict";
+/* ============================================================
+   SINKRONISASI MODE TERPUSAT — backend spreadsheet (Code.gs)
+   Kontrak: GET ?action=... (JSONP cadangan) & POST JSON.
+   Token sesi server 6 jam. Lencana TERPUSAT hanya menyala bila
+   ping DAN get_db berhasil; kegagalan server -> spanduk + lokal.
+   Tab Users TIDAK pernah dikirim/diambil lewat save_db/get_db:
+   akun & sandi lokal dipertahankan apa adanya di perangkat.
+   ============================================================ */
+var SYNC = { aktif:false, token:"", timer:null, baseline:{}, sedangKirim:false };
+var TOKEN_KEY = "kurikulum_spensa_token";
+var KOLEKSI_SINKRON = ["guru","rombel","struktur","skbm","jadwal","kalender","pekan","piket","upacara","inval","ekskul","p5","perangkat","supervisi","ujian","proker","rapat"];
+function cfgTerpusat(){ return DB && DB.pengaturan.koneksi.mode==="terpusat" && !!(DB.pengaturan.koneksi.url||DEFAULT_API_URL); }
+function apiBase(){ return String((DB && DB.pengaturan && DB.pengaturan.koneksi && DB.pengaturan.koneksi.url)||DEFAULT_API_URL).replace(/\s+$/,""); }
+function muatToken(){ try{ return sessionStorage.getItem(TOKEN_KEY)||""; }catch(e){ return ""; } }
+function simpanToken(t){ try{ if(t) sessionStorage.setItem(TOKEN_KEY,t); else sessionStorage.removeItem(TOKEN_KEY); }catch(e){} }
+function apiQuery(action, params){
+  var qs=["action="+encodeURIComponent(action)];
+  for(var k in params){ var v=params[k]; if(v===undefined||v===null||v==="") continue;
+    qs.push(encodeURIComponent(k)+"="+encodeURIComponent(typeof v==="object"?JSON.stringify(v):String(v))); }
+  var b=apiBase(); return b+(b.indexOf("?")>=0?"&":"?")+qs.join("&");
+}
+function apiJsonp(url){
+  return new Promise(function(resolve,reject){
+    var cb="kurcb"+Date.now()+Math.floor(Math.random()*99999);
+    var s=document.createElement("script"); var selesai=false;
+    var to=setTimeout(function(){ bersih(); reject(new Error("JSONP timeout")); },30000);
+    function bersih(){ if(selesai) return; selesai=true; clearTimeout(to); try{ delete window[cb]; }catch(e){ window[cb]=undefined; } if(s.parentNode) s.parentNode.removeChild(s); }
+    window[cb]=function(d){ bersih(); resolve(d); };
+    s.onerror=function(){ bersih(); reject(new Error("JSONP gagal")); };
+    s.src=url+(url.indexOf("?")>=0?"&":"?")+"callback="+cb;
+    document.head.appendChild(s);
+  });
+}
+function apiGet(action, params){
+  var url=apiQuery(action, params||{});
+  if(typeof fetch!=="function") return apiJsonp(url);
+  return fetch(url,{method:"GET"}).then(function(r){ return r.text(); }).then(function(t){
+    var j; try{ j=JSON.parse(t); }catch(e){ throw new Error("Respons server bukan JSON"); }
+    return j;
+  }).catch(function(){ return apiJsonp(url); });
+}
+function apiPost(action, payload){
+  var body={}; for(var k in (payload||{})) body[k]=payload[k]; body.action=action;
+  if(typeof fetch!=="function") return Promise.reject(new Error("Peramban tidak mendukung fetch"));
+  return fetch(apiBase(), {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(body)})
+   .then(function(r){ return r.text(); }).then(function(t){
+     var j; try{ j=JSON.parse(t); }catch(e){ throw new Error("Respons server bukan JSON"); }
+     return j;
+   });
+}
+function tampilBanner(html){
+  var b=document.getElementById("syncBanner"); if(!b) return;
+  b.innerHTML=html; b.classList.remove("hidden");
+}
+function sembunyiBanner(){ var b=document.getElementById("syncBanner"); if(b){ b.classList.add("hidden"); b.innerHTML=""; } }
+function matikanTerpusat(alasan){
+  SYNC.aktif=false; SYNC.token=""; simpanToken("");
+  updateModeBadge();
+  tampilBanner("⚠️ <b>Koneksi server terputus</b> — aplikasi berlanjut pada <b>MODE LOKAL</b> dengan data perangkat ini. Perubahan tetap tersimpan di perangkat dan dapat disinkronkan setelah masuk kembali. <span class='small'>("+esc(alasan||"server tidak terjangkau")+")</span>");
+}
+/* ---------- Baseline & kirim perubahan per koleksi ---------- */
+function snapshotSinkron(){
+  var o={};
+  KOLEKSI_SINKRON.forEach(function(n){ o[n]=JSON.stringify(DB[n]===undefined?null:DB[n]); });
+  o.__pengaturan = JSON.stringify(pengaturanUntukServer());
+  return o;
+}
+function pengaturanUntukServer(){
+  var p={}, src=DB.pengaturan||{};
+  for(var k in src){ if(k!=="koneksi") p[k]=src[k]; }
+  return { pengaturan:p, skbmSah:DB.skbmSah, catatan:DB.catatan };
+}
+function tangkapBaseline(){ SYNC.baseline = snapshotSinkron(); }
+function jadwalkanSinkron(){
+  if(!SYNC.aktif || !SYNC.token || !SESI || SESI.peran!=="wakakur") return;
+  if(SYNC.timer) clearTimeout(SYNC.timer);
+  SYNC.timer=setTimeout(kirimPerubahan, 1200);
+}
+function kirimPerubahan(){
+  if(SYNC.sedangKirim || !SYNC.aktif || !SYNC.token) return;
+  var snap=snapshotSinkron(); var antre=[];
+  KOLEKSI_SINKRON.forEach(function(n){ if(snap[n]!==SYNC.baseline[n]) antre.push(n); });
+  var pengBerubah = snap.__pengaturan!==SYNC.baseline.__pengaturan;
+  if(!antre.length && !pengBerubah) return;
+  SYNC.sedangKirim=true;
+  var rantai=Promise.resolve();
+  antre.forEach(function(n){
+    rantai=rantai.then(function(){
+      return apiPost("save_collection", {token:SYNC.token, collection:n, data:DB[n]}).then(function(j){
+        if(!j || !j.ok) throw new Error((j&&j.error)||("save_collection "+n+" ditolak server"));
+        SYNC.baseline[n]=snap[n];
+      });
+    });
+  });
+  if(pengBerubah){
+    rantai=rantai.then(function(){
+      var d=pengaturanUntukServer(); var data={}; for(var k in d.pengaturan) data[k]=d.pengaturan[k];
+      data.skbmSah=d.skbmSah; data.catatan=d.catatan;
+      return apiPost("config_set", {token:SYNC.token, data:data}).then(function(j){
+        if(!j || !j.ok) throw new Error((j&&j.error)||"config_set ditolak server");
+        SYNC.baseline.__pengaturan=snap.__pengaturan;
+      });
+    });
+  }
+  rantai.then(function(){
+    SYNC.sedangKirim=false; sembunyiBanner();
+  }).catch(function(e){
+    SYNC.sedangKirim=false;
+    if(/Sesi tidak valid|kedaluwarsa/i.test(e.message||"")) matikanTerpusat("sesi server kedaluwarsa (6 jam) — silakan masuk kembali");
+    else tampilBanner("⚠️ <b>Sinkronisasi ke server gagal</b> — perubahan terakhir masih tersimpan aman di perangkat ini (MODE LOKAL) dan akan dicoba lagi pada perubahan berikutnya. <span class='small'>("+esc(e.message||"jaringan")+")</span>");
+  });
+}
+/* ---------- Adopsi DB server (users & koneksi lokal dipertahankan) ---------- */
+function adopsiDbServer(sdb){
+  if(!sdb || !sdb.guru || !sdb.skbm) return false;
+  var usersLokal=DB.users, koneksiLokal=DB.pengaturan.koneksi;
+  if(!sdb.pengaturan) sdb.pengaturan={};
+  sdb.pengaturan.koneksi=koneksiLokal;
+  sdb.users=usersLokal;
+  if(!sdb.skbmSah) sdb.skbmSah={oleh:"",tanggal:"",status:"Belum disahkan"};
+  if(typeof sdb.catatan!=="string") sdb.catatan="";
+  if(!sdb.jadwal) sdb.jadwal={};
+  KELAS.forEach(function(k){ if(!sdb.jadwal[k]) sdb.jadwal[k]={}; });
+  if(!sdb.perangkat) sdb.perangkat={};
+  sdb.guru.forEach(function(g){
+    if(!sdb.perangkat[g.id]) sdb.perangkat[g.id]={};
+    DOK_PERANGKAT.forEach(function(d){ if(sdb.perangkat[g.id][d]===undefined) sdb.perangkat[g.id][d]=0; });
+  });
+  DB=sdb; simpanLokal(); tangkapBaseline(); updateModeBadge();
+  return true;
+}
+/* ping -> (token) get_db -> adopsi. Mengembalikan Promise<true|false>. */
+function aktifkanTerpusat(){
+  return apiGet("ping", {}).then(function(j){
+    if(!j || !j.ok) throw new Error("ping gagal");
+    SYNC.token = SYNC.token || muatToken();
+    if(!SYNC.token) return false;
+    return apiGet("get_db", {token:SYNC.token}).then(function(j2){
+      if(!j2 || !j2.ok || !j2.data) throw new Error((j2&&j2.error)||"get_db gagal");
+      if(!adopsiDbServer(j2.data)) throw new Error("Bentuk data server tidak dikenal");
+      SYNC.aktif=true; updateModeBadge(); sembunyiBanner();
+      return true;
+    });
+  });
+}
+/* Login server: sukses -> {user, token}; ditolak server -> {ditolak:pesan}; tak terjangkau -> throw */
+function loginServer(username, password){
+  return apiPost("login", {username:username, password:password}).then(function(j){
+    if(j && j.ok && j.token && j.user) return j;
+    return { ditolak:(j&&j.error)||"Login server ditolak." };
+  });
+}
+function sesiDariServer(j){
+  var u=j.user;
+  var peran = u.peran==="admin" ? "wakakur" : u.peran;
+  setSesi({ username:u.username, peran:peran, nama:u.nama, guruId:u.ref_id||"" });
+  SYNC.token=j.token; simpanToken(j.token);
+}
+</script>
+<script>
+"use strict";
+/* ---------- Modal & Unduh (selalu lewat menu Pilih Format) ---------- */
+function openModal(html){ document.getElementById("modalRoot").innerHTML = '<div class="modal-bg" id="modalBg"><div class="modal">'+html+'</div></div>';
+  document.getElementById("modalBg").addEventListener("click",function(e){ if(e.target.id==="modalBg") closeModal(); }); }
+function closeModal(){ document.getElementById("modalRoot").innerHTML=""; }
+function kopHTML(){
+  var p=DB.pengaturan;
+  return '<div class="kop"><div class="l1">PEMERINTAH KABUPATEN GUNUNGKIDUL</div><div class="l2">DINAS PENDIDIKAN</div><div class="l3">'+esc(p.namaSekolah.toUpperCase())+'</div><div class="l4">'+esc(p.alamat)+' · NPSN '+esc(p.npsn)+'</div></div>';
+}
+function ttdHTML(kiriLabel, kiriNama, kananLabel, kananNama){
+  return '<div class="ttd"><div class="col">'+esc(kiriLabel)+'<div class="nm">'+esc(kiriNama)+'</div></div><div class="col" style="text-align:left">'+esc(kananLabel)+'<div class="nm">'+esc(kananNama)+'</div></div></div>';
+}
+function buildDoc(judul, sub, isiHTML, ttd){
+  var p=DB.pengaturan;
+  return kopHTML() + '<div class="doc-title">'+esc(judul)+'</div><div class="doc-sub">'+esc(sub)+'</div>' + isiHTML +
+    (ttd ? ttdHTML("Mengetahui,<br>Kepala Sekolah", p.kepsek, "Wonosari, "+tglIndo(new Date())+"<br>Wakakur", p.wakakur) : "");
+}
+function tglIndo(d){ var b=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]; return d.getDate()+" "+b[d.getMonth()]+" "+d.getFullYear(); }
+function unduhMenu(judul, sub, isiHTML, ttd){
+  var doc = buildDoc(judul, sub, isiHTML, ttd);
+  openModal('<h3>Unduh / Cetak Dokumen</h3><p class="small" style="margin-top:0">'+esc(judul)+' — pilih format terlebih dahulu:</p>'+
+   '<button class="fmt-btn" id="fmtHtml"><span class="fi">🌐</span><span><b>HTML</b><span>Berkas .html berkop resmi, dibuka di peramban</span></span></button>'+
+   '<button class="fmt-btn" id="fmtXls"><span class="fi">📊</span><span><b>Excel</b><span>Berkas .xls tabel dokumen, dibuka di Excel/WPS</span></span></button>'+
+   '<button class="fmt-btn" id="fmtPdf"><span class="fi">📕</span><span><b>PDF</b><span>Lewat dialog cetak — pilih “Simpan sebagai PDF”, kertas A4</span></span></button>'+
+   '<button class="fmt-btn" id="fmtPrint"><span class="fi">🖨️</span><span><b>Cetak</b><span>Cetak langsung kertas A4 berkop resmi</span></span></button>'+
+   '<button class="btn ghost block" onclick="closeModal()">Batal</button>');
+  function doPrint(){ var pa=document.getElementById("printArea"); pa.innerHTML=doc; closeModal(); setTimeout(function(){ window.print(); },80); }
+  document.getElementById("fmtPdf").onclick = doPrint;
+  document.getElementById("fmtPrint").onclick = doPrint;
+  document.getElementById("fmtHtml").onclick = function(){
+    var full='<!doctype html><html lang="id"><head><meta charset="utf-8"><title>'+esc(judul)+'</title><style>body{font-family:Georgia,serif;color:#000;padding:24px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #444;padding:5px 7px;font-size:12.5px;text-align:left}th{background:#0e2a47;color:#fff}.kop{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:14px}.kop .l1{font-size:15px}.kop .l2{font-size:16px;font-weight:700}.kop .l3{font-size:20px;font-weight:800}.kop .l4{font-size:11.5px}.doc-title{text-align:center;font-weight:800;font-size:15px}.doc-sub{text-align:center;font-size:12.5px;margin-bottom:12px}.ttd{display:flex;justify-content:space-between;margin-top:28px;font-size:12.5px}.ttd .col{width:45%}.ttd .nm{margin-top:58px;font-weight:700;text-decoration:underline}</style></head><body>'+doc+'</body></html>';
+    downloadBlob(full, "text/html", slugFile(judul)+".html"); closeModal(); toast("Berkas HTML diunduh.");
+  };
+  document.getElementById("fmtXls").onclick = function(){
+    var xls='<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body><h3>'+esc(judul)+'</h3><p>'+esc(sub)+'</p>'+isiHTML+'</body></html>';
+    downloadBlob(xls, "application/vnd.ms-excel", slugFile(judul)+".xls"); closeModal(); toast("Berkas Excel diunduh.");
+  };
+}
+function slugFile(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
+function downloadBlob(content, type, name){
+  var blob = new Blob([content], {type:type+";charset=utf-8"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },300);
+}
+function tableHTML(headers, rows){
+  var h='<div class="tbl-wrap"><table><thead><tr>'+headers.map(function(x){return "<th>"+esc(x)+"</th>";}).join("")+"</tr></thead><tbody>";
+  rows.forEach(function(r){ h+="<tr>"+r.map(function(c){return "<td>"+c+"</td>";}).join("")+"</tr>"; });
+  return h+"</tbody></table></div>";
+}
+
+/* ---------- Login ---------- */
+/* Hash ringan satu arah agar kata sandi tidak tersimpan sebagai teks biasa di perangkat. */
+function hashPw(s){
+  var h1=0xdeadbeef, h2=0x41c6ce57, str="spensa·"+String(s)+"·kurikulum";
+  for(var i=0;i<str.length;i++){ var ch=str.charCodeAt(i);
+    h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (h2>>>0).toString(16)+(h1>>>0).toString(16);
+}
+function findUser(username){ var u=null; DB.users.forEach(function(x){ if(x.username===username) u=x; }); return u; }
+function masukSebagai(u){ setSesi({username:u.username, peran:u.peran, nama:u.nama, guruId:u.guruId}); }
+/* Hasil: "ok" | "salah" | "belum" (akun belum membuat kata sandi) */
+function doLogin(username, pass){
+  var u=findUser(username); if(!u) return "salah";
+  if(!u.passHash) return "belum";
+  if(u.passHash!==hashPw(pass)) return "salah";
+  masukSebagai(u); return "ok";
+}
+function showApp(){
+  document.getElementById("loginView").classList.add("hidden");
+  document.getElementById("appView").classList.remove("hidden");
+  document.getElementById("sbName").textContent = SESI.nama;
+  document.getElementById("sbRole").textContent = SESI.peran==="wakakur" ? "Wakakur / Admin Kurikulum" : (SESI.peran==="kepsek" ? "Kepala Sekolah" : "Guru");
+  document.getElementById("topInfo").textContent = "TA "+DB.pengaturan.tahunAjaran+" · Semester "+DB.pengaturan.semester;
+  updateModeBadge(); renderMenu(); go(SESI.peran==="guru" ? "jadwal" : "dashboard");
+  /* Bila konfigurasi terpusat & masih ada token sesi server di tab ini,
+     coba aktifkan sinkronisasi di latar belakang (diam-diam bila gagal). */
+  if(cfgTerpusat() && !SYNC.aktif && !SYNC.mencoba){
+    SYNC.mencoba=true;
+    aktifkanTerpusat().then(function(ok){
+      SYNC.mencoba=false;
+      if(ok && SESI){ renderPage(); toast("Terhubung ke server sekolah — MODE TERPUSAT aktif."); }
+    }).catch(function(){ SYNC.mencoba=false; });
+  }
+}
+function showLogin(){
+  if(SYNC.token){ var tk=SYNC.token; apiPost("logout", {token:tk}).catch(function(){}); }
+  SYNC.aktif=false; SYNC.token=""; simpanToken(""); sembunyiBanner();
+  setSesi(null);
+  document.getElementById("appView").classList.add("hidden");
+  document.getElementById("loginView").classList.remove("hidden");
+}
+
+/* ---------- Navigasi ---------- */
+var MENUS = [
+ {id:"dashboard", label:"Dashboard Wakakur", icon:"📊", peran:["wakakur","kepsek"]},
+ {id:"database", label:"Database Sekolah & TA", icon:"🏫", peran:["wakakur","kepsek"]},
+ {id:"kalender", label:"Kalender & Pekan Efektif", icon:"🗓️", peran:["wakakur","kepsek"]},
+ {id:"struktur", label:"Struktur Kurikulum", icon:"🧭", peran:["wakakur","kepsek"]},
+ {id:"skbm", label:"Pembagian Tugas / SKBM", icon:"📋", peran:["wakakur","kepsek","guru"]},
+ {id:"jadwal", label:"Jadwal Pelajaran", icon:"🕘", peran:["wakakur","kepsek","guru"]},
+ {id:"pendukung", label:"Jadwal Pendukung", icon:"🔔", peran:["wakakur","kepsek","guru"]},
+ {id:"ekskul", label:"Ekskul & Kokurikuler P5", icon:"🎨", peran:["wakakur","kepsek"]},
+ {id:"perangkat", label:"Perangkat Ajar Guru", icon:"📚", peran:["wakakur","kepsek","guru"]},
+ {id:"supervisi", label:"Supervisi Akademik", icon:"🔍", peran:["wakakur","kepsek"]},
+ {id:"ujian", label:"Ujian & Asesmen Sekolah", icon:"📝", peran:["wakakur","kepsek"]},
+ {id:"proker", label:"Program Kerja & Laporan", icon:"🗂️", peran:["wakakur","kepsek"]},
+ {id:"pengaturan", label:"Pengaturan", icon:"⚙️", peran:["wakakur","kepsek"]}
+];
+var PAGE = "dashboard";
+function renderMenu(){
+  var nav=document.getElementById("menuNav"); nav.innerHTML="";
+  MENUS.filter(function(m){ return m.peran.indexOf(SESI.peran)>=0; }).forEach(function(m){
+    var b=document.createElement("button");
+    b.innerHTML='<span class="ic">'+m.icon+'</span><span>'+esc(m.label)+'</span>';
+    if(m.id===PAGE) b.className="active";
+    b.onclick=function(){ PAGE=m.id; renderMenu(); renderPage(); document.getElementById("sidebar").classList.remove("open"); };
+    nav.appendChild(b);
+  });
+}
+function go(id){ PAGE=id; renderMenu(); renderPage(); }
+function renderPage(){
+  var m = MENUS.filter(function(x){return x.id===PAGE;})[0];
+  document.getElementById("pageTitle").textContent = m ? (SESI.peran==="guru" && PAGE==="dashboard" ? "Beranda Guru" : m.label) : "";
+  document.getElementById("pageSub").textContent = DB.pengaturan.namaSekolah+" · TA "+DB.pengaturan.tahunAjaran+" · Semester "+DB.pengaturan.semester + (SESI.peran==="kepsek" ? " · Mode hanya-lihat & pengesahan" : "") + (SESI.peran==="guru" ? " · Tampilan guru: data milik sendiri" : "");
+  var fn = PAGES[PAGE]; if(fn) fn(document.getElementById("pageBody"));
+  window.scrollTo(0,0);
+}
+var PAGES = {};
+</script>
+<script>
+"use strict";
+/* ================= 1. DASHBOARD ================= */
+PAGES.dashboard = function(el){
+  var guruJP = DB.guru.map(function(g){ return {g:g, jp:totalJP(g.id)}; });
+  var kurang = guruJP.filter(function(x){ return x.g.mapel!=="" && x.jp<24; });
+  var tuntas = guruJP.filter(function(x){ return x.jp>=24; }).length;
+  var slotTerisi=0, slotTotal=0, kelasBelum=[];
+  KELAS.forEach(function(k){
+    var n=0; for(var key in DB.jadwal[k]) n++;
+    slotTerisi+=n; slotTotal+=48;
+    var butuh=0; DB.skbm.forEach(function(s){ if(s.kelas===k) butuh+=s.jp; });
+    if(n<butuh) kelasBelum.push({kelas:k, terisi:n, butuh:butuh});
+  });
+  var dokBelum=0, dokTotal=0;
+  DB.guru.forEach(function(g){ DOK_PERANGKAT.forEach(function(d){ dokTotal++; if(DB.perangkat[g.id][d]===0) dokBelum++; }); });
+  var agenda = DB.kalender.slice().sort(function(a,b){return a.tanggal<b.tanggal?-1:1;}).slice(0,5);
+  var h = '<div class="grid c4">'+
+   stat("Guru", DB.guru.length, "37 guru data LMS Terpadu", 100)+
+   stat("Rombel Terjadwal", KELAS.length-kelasBelum.length+" / "+KELAS.length, "kelas jadwalnya lengkap", Math.round((KELAS.length-kelasBelum.length)/KELAS.length*100))+
+   stat("Guru Beban ≥ 24 JP", tuntas+" / "+DB.guru.length, "guru mencapai batas minimal sertifikasi", Math.round(tuntas/DB.guru.length*100))+
+   stat("Perangkat Ajar Masuk", (dokTotal-dokBelum)+" / "+dokTotal, "dokumen CP/ATP s.d. KKTP", Math.round((dokTotal-dokBelum)/dokTotal*100))+
+  '</div><div class="grid c2" style="margin-top:14px">';
+  h += '<div class="card"><h3>⚠️ Guru Belum Tuntas 24 JP ('+kurang.length+')</h3>';
+  if(!kurang.length) h+='<p class="small">Semua guru sudah mencapai 24 JP.</p>';
+  else h += tableHTML(["Guru","Mapel","Total JP","Status"], kurang.map(function(x){ return [esc(x.g.nama), esc(x.g.mapel||"-"), x.jp+" JP", '<span class="tag warn">Kurang '+(24-x.jp)+' JP</span>']; }));
+  h += '</div>';
+  h += '<div class="card"><h3>🗓️ Agenda Terdekat</h3><ul class="chk">'+ agenda.map(function(a){ return '<li><span class="box" style="background:var(--teal);border-color:var(--teal)">•</span><span class="tx"><b>'+esc(a.tanggal)+'</b> — '+esc(a.nama)+'</span></li>'; }).join("") +'</ul>';
+  h += '<h3 style="margin-top:14px">🏫 Rombel Jadwal Belum Lengkap</h3>';
+  if(!kelasBelum.length) h+='<p class="small">Semua rombel sudah terjadwal penuh sesuai SKBM.</p>';
+  else h += tableHTML(["Kelas","Terisi","Kebutuhan JP"], kelasBelum.map(function(x){return [x.kelas, x.terisi+" JP", x.butuh+" JP"]; }));
+  h += '</div></div>';
+  h += '<div class="card" style="margin-top:14px"><h3>📝 Catatan Cepat Wakakur</h3>'+
+    (canEdit() ? '<textarea id="catatanCepat" rows="3" style="width:100%">'+esc(DB.catatan)+'</textarea><div style="margin-top:8px"><button class="btn teal sm" id="btnSimpanCatatan">Simpan Catatan</button></div>'
+               : '<p>'+esc(DB.catatan)+'</p>') + '</div>';
+  el.innerHTML = h;
+  var bs=document.getElementById("btnSimpanCatatan");
+  if(bs) bs.onclick=function(){ DB.catatan=document.getElementById("catatanCepat").value; saveDB(); toast("Catatan tersimpan."); };
+};
+function stat(lbl,num,sub,pct){ return '<div class="card stat"><div class="lbl">'+esc(lbl)+'</div><div class="num">'+esc(num)+'</div><div class="lbl">'+esc(sub)+'</div><div class="bar"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>'; }
+
+/* ================= 2. DATABASE SEKOLAH ================= */
+PAGES.database = function(el){
+  var p=DB.pengaturan;
+  var h='<div class="grid c2"><div class="card"><h3>Identitas Sekolah</h3>'+
+   tableHTML(["Komponen","Isi"],[
+     ["Nama Sekolah",esc(p.namaSekolah)],["NPSN",esc(p.npsn)],["Alamat",esc(p.alamat)],
+     ["Kepala Sekolah",esc(p.kepsek)],["Wakakur",esc(p.wakakur)],
+     ["Tahun Ajaran Aktif",esc(p.tahunAjaran)],["Semester Aktif",esc(p.semester)],
+     ["Jumlah Guru",DB.guru.length+" orang"],["Jumlah Rombel","21 kelas (7A–9G)"],["Jumlah Siswa","669 siswa (data LMS Terpadu)"]
+   ])+
+   (canEdit()?'<p class="small">Ubah identitas & tahun ajaran di menu <b>Pengaturan</b>.</p>':'')+
+   '</div>';
+  h+='<div class="card"><h3>Rombel & Wali Kelas (21 Kelas)</h3>'+ tableHTML(["Kelas","Wali Kelas","Mapel Wali","Jml Siswa"],
+    DB.rombel.map(function(r){ var w=guruById(DB,r.waliId); return ["<b>"+r.kelas+"</b>", esc(w?w.nama:"—"), esc(w?w.mapel||"-":"—"), r.jumlahSiswa]; })) +'</div></div>';
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">Daftar Guru & Mata Pelajaran ('+DB.guru.length+')</h3><span class="sp"></span>'+
+    '<input id="cariGuru" placeholder="Cari nama / mapel…" style="min-width:200px">'+
+    (canEdit()?'<button class="btn teal sm" id="btnTambahGuru">+ Tambah Guru</button>':'')+
+    '<button class="btn gold sm" id="btnUnduhGuru">Unduh</button></div><div id="tblGuru"></div></div>';
+  el.innerHTML=h;
+  function renderTbl(filter){
+    var rows=DB.guru.filter(function(g){ return !filter || (g.nama+" "+g.mapel).toLowerCase().indexOf(filter.toLowerCase())>=0; })
+      .map(function(g,i){ return [i+1, esc(g.nama), esc(g.mapel||"-"), esc(g.username), totalJP(g.id)+" JP",
+        canEdit()?'<button class="btn ghost sm" data-edit-guru="'+g.id+'">Ubah</button> <button class="btn ghost sm" data-del-guru="'+g.id+'">Hapus</button>':""]; });
+    document.getElementById("tblGuru").innerHTML = tableHTML(["No","Nama Guru","Mata Pelajaran","Username","Total JP","Aksi"], rows);
+    if(canEdit()){
+      document.querySelectorAll("[data-edit-guru]").forEach(function(b){ b.onclick=function(){ formGuru(b.getAttribute("data-edit-guru")); }; });
+      document.querySelectorAll("[data-del-guru]").forEach(function(b){ b.onclick=function(){
+        if(DB.guru.length<=1) return;
+        DB.guru = DB.guru.filter(function(g){return g.id!==b.getAttribute("data-del-guru");}); saveDB(); renderPage(); toast("Guru dihapus."); }; });
+    }
+  }
+  renderTbl("");
+  document.getElementById("cariGuru").addEventListener("input",function(e){ renderTbl(e.target.value); });
+  document.getElementById("btnUnduhGuru").onclick=function(){
+    var rows=DB.guru.map(function(g,i){return [i+1,esc(g.nama),esc(g.mapel||"-"),totalJP(g.id)];});
+    unduhMenu("Daftar Guru dan Mata Pelajaran","TA "+p.tahunAjaran+" · Semester "+p.semester, tableHTML(["No","Nama Guru","Mata Pelajaran","Total JP"],rows), true);
+  };
+  var bt=document.getElementById("btnTambahGuru"); if(bt) bt.onclick=function(){ formGuru(null); };
+};
+function formGuru(id){
+  var g = id ? guruById(DB,id) : {nama:"", mapel:"", username:""};
+  var mapels = []; STRUKTUR_AWAL.forEach(function(s){ if(mapels.indexOf(s[0])<0 && s[4]==="Intrakurikuler") mapels.push(s[0]); });
+  mapels.push("BK","");
+  openModal('<h3>'+(id?"Ubah":"Tambah")+' Guru</h3><div class="form-grid">'+
+   '<div class="full"><label>Nama lengkap (dengan gelar)</label><input id="fgNama" value="'+esc(g.nama)+'"></div>'+
+   '<div><label>Mata Pelajaran</label><select id="fgMapel">'+mapels.map(function(m){return '<option value="'+esc(m)+'"'+(g.mapel===m?" selected":"")+'>'+esc(m||"— (belum ada mapel)")+'</option>';}).join("")+'</select></div>'+
+   '<div><label>Username login</label><input id="fgUser" value="'+esc(g.username)+'"></div></div>'+
+   '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="fgSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+  document.getElementById("fgSimpan").onclick=function(){
+    var nama=document.getElementById("fgNama").value.trim(), user=document.getElementById("fgUser").value.trim().toLowerCase(), mapel=document.getElementById("fgMapel").value;
+    if(!nama||!user){ toast("Nama dan username wajib diisi."); return; }
+    if(id){ var t=guruById(DB,id); t.nama=nama; t.mapel=mapel; t.username=user;
+      DB.users.forEach(function(u){ if(u.guruId===id){ u.username=user; u.nama=nama; } });
+    } else {
+      var nid="g"+uid(""); var ng={id:nid, nama:nama, mapel:mapel, username:user, nip:""};
+      DB.guru.push(ng); DB.users.push({username:user, passHash:"", peran:"guru", nama:nama, guruId:nid});
+      DB.perangkat[nid]={}; DOK_PERANGKAT.forEach(function(d){ DB.perangkat[nid][d]=0; });
+    }
+    saveDB(); closeModal(); renderPage(); toast("Data guru tersimpan.");
+  };
+}
+
+/* ================= 3. KALENDER & PEKAN EFEKTIF ================= */
+var kalState = {bulanIdx:0}; /* 0 = Juli 2026 */
+PAGES.kalender = function(el){
+  var p=DB.pengaturan;
+  var totalEfektif=0, totalTidak=0, rowsPekan=[];
+  ["Ganjil","Genap"].forEach(function(sem){
+    DB.pekan[sem].forEach(function(b){ totalEfektif += (b[1]-b[2]); totalTidak += b[2];
+      rowsPekan.push(["Semester "+sem, b[0], b[1], b[2], "<b>"+(b[1]-b[2])+"</b>"]); });
+  });
+  var thn = kalState.bulanIdx<6 ? 2026 : 2027, bln = (kalState.bulanIdx+6)%12; /* Juli=6 */
+  var first = new Date(thn, bln, 1); var startDay = (first.getDay()+6)%7; var days = new Date(thn, bln+1, 0).getDate();
+  var namaBulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"][bln];
+  var evByDay = {};
+  DB.kalender.forEach(function(ev){
+    var d = new Date(ev.tanggal+"T00:00:00");
+    if(d.getFullYear()===thn && d.getMonth()===bln){ (evByDay[d.getDate()]=evByDay[d.getDate()]||[]).push(ev); }
+  });
+  var cal='<div class="cal">'+["Sen","Sel","Rab","Kam","Jum","Sab","Min"].map(function(d){return '<div class="dow">'+d+'</div>';}).join("");
+  for(var i=0;i<startDay;i++) cal+='<div></div>';
+  for(var dd=1; dd<=days; dd++){
+    var evs = evByDay[dd]||[]; var cls = evs.length ? evs[0].jenis : "";
+    cal+='<div class="day '+cls+'"><span class="dnum">'+dd+'</span>'+ evs.map(function(e){return '<span class="ev">'+esc(e.nama)+'</span>';}).join("") +'</div>';
+  }
+  cal+='</div>';
+  var h='<div class="grid c2"><div class="card"><div class="toolbar"><button class="btn ghost sm" id="kalPrev">◀</button><h3 style="margin:0">'+namaBulan+' '+thn+'</h3><button class="btn ghost sm" id="kalNext">▶</button><span class="sp"></span>'+
+    (canEdit()?'<button class="btn teal sm" id="btnTambahEv">+ Tambah Kegiatan</button>':'')+'</div>'+ cal +
+    '<p class="small" style="margin-top:10px"><span class="tag bad">Libur</span> <span class="tag warn">Ujian/Asesmen</span> <span class="tag info">Kegiatan Penting</span></p></div>';
+  h+='<div class="card"><h3>Pekan Efektif TA '+esc(p.tahunAjaran)+'</h3>'+
+    '<div class="grid c2" style="margin-bottom:10px">'+ stat("Pekan Efektif", totalEfektif, "pekan belajar efektif 1 tahun", Math.round(totalEfektif/(totalEfektif+totalTidak)*100)) + stat("Pekan Tidak Efektif", totalTidak, "libur, ujian, kegiatan sekolah", Math.round(totalTidak/(totalEfektif+totalTidak)*100)) +'</div>'+
+    tableHTML(["Semester","Bulan","Total Pekan","Tidak Efektif","Efektif"], rowsPekan) +
+    '<p class="small">Pekan efektif = total pekan − pekan tidak efektif (libur/ujian/kegiatan). Angka ini menjadi dasar penyusunan Prota & Promes guru.</p>'+
+    (canEdit()?'<div class="toolbar"><span class="sp"></span><button class="btn ghost sm" id="btnEditPekan">Ubah Angka Pekan</button><button class="btn gold sm" id="btnUnduhKal">Unduh Kalender & Pekan Efektif</button></div>':'<div class="toolbar"><span class="sp"></span><button class="btn gold sm" id="btnUnduhKal">Unduh</button></div>')+
+    '</div></div>';
+  h+='<div class="card" style="margin-top:14px"><h3>Daftar Kegiatan Tahun Ajaran</h3>'+ tableHTML(["Tanggal","Kegiatan","Jenis","Aksi"],
+    DB.kalender.slice().sort(function(a,b){return a.tanggal<b.tanggal?-1:1;}).map(function(ev){
+      return [esc(ev.tanggal), esc(ev.nama), ev.jenis==="libur"?'<span class="tag bad">Libur</span>':(ev.jenis==="ujian"?'<span class="tag warn">Ujian</span>':'<span class="tag info">Penting</span>'),
+      canEdit()?'<button class="btn ghost sm" data-del-ev="'+ev.id+'">Hapus</button>':""]; })) +'</div>';
+  el.innerHTML=h;
+  document.getElementById("kalPrev").onclick=function(){ if(kalState.bulanIdx>0){ kalState.bulanIdx--; renderPage(); } };
+  document.getElementById("kalNext").onclick=function(){ if(kalState.bulanIdx<11){ kalState.bulanIdx++; renderPage(); } };
+  document.querySelectorAll("[data-del-ev]").forEach(function(b){ b.onclick=function(){ DB.kalender=DB.kalender.filter(function(e){return e.id!==b.getAttribute("data-del-ev");}); saveDB(); renderPage(); }; });
+  document.getElementById("btnUnduhKal").onclick=function(){
+    unduhMenu("Kalender Pendidikan & Pekan Efektif", "TA "+p.tahunAjaran, tableHTML(["Semester","Bulan","Total Pekan","Tidak Efektif","Efektif"], rowsPekan) + "<h4>Daftar Kegiatan</h4>" + tableHTML(["Tanggal","Kegiatan","Jenis"], DB.kalender.map(function(e){return [esc(e.tanggal),esc(e.nama),esc(e.jenis)];})), true);
+  };
+  var be=document.getElementById("btnTambahEv");
+  if(be) be.onclick=function(){
+    openModal('<h3>Tambah Kegiatan Kalender</h3><div class="form-grid"><div><label>Tanggal</label><input type="date" id="evTgl" value="2026-10-05"></div>'+
+     '<div><label>Jenis</label><select id="evJenis"><option value="penting">Kegiatan Penting</option><option value="ujian">Ujian/Asesmen</option><option value="libur">Libur</option></select></div>'+
+     '<div class="full"><label>Nama Kegiatan</label><input id="evNama" placeholder="mis. LDKS / Latihan Dasar Kepemimpinan"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="evSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("evSimpan").onclick=function(){
+      var nama=document.getElementById("evNama").value.trim(); if(!nama){ toast("Nama kegiatan wajib diisi."); return; }
+      DB.kalender.push({id:uid("k"), tanggal:document.getElementById("evTgl").value, nama:nama, jenis:document.getElementById("evJenis").value});
+      saveDB(); closeModal(); renderPage(); toast("Kegiatan ditambahkan.");
+    };
+  };
+  var bp=document.getElementById("btnEditPekan");
+  if(bp) bp.onclick=function(){
+    var fields="";
+    ["Ganjil","Genap"].forEach(function(sem){ DB.pekan[sem].forEach(function(b,i){
+      fields+='<div><label>'+sem+' · '+b[0]+' — tidak efektif (pekan)</label><input type="number" min="0" max="5" data-pekan="'+sem+'|'+i+'" value="'+b[2]+'"></div>'; }); });
+    openModal('<h3>Ubah Pekan Tidak Efektif per Bulan</h3><p class="small">Total pekan per bulan tetap; ubah hanya jumlah pekan tidak efektifnya. Pekan efektif dihitung otomatis.</p><div class="form-grid">'+fields+'</div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="pkSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("pkSimpan").onclick=function(){
+      document.querySelectorAll("[data-pekan]").forEach(function(inp){ var pr=inp.getAttribute("data-pekan").split("|"); DB.pekan[pr[0]][parseInt(pr[1],10)][2]=Math.max(0,parseInt(inp.value||"0",10)); });
+      saveDB(); closeModal(); renderPage(); toast("Pekan efektif diperbarui.");
+    };
+  };
+};
+
+/* ================= 4. STRUKTUR KURIKULUM ================= */
+PAGES.struktur = function(el){
+  function tot(idx){ var t=0; DB.struktur.forEach(function(s){ t += idx===7?s.jp7:(idx===8?s.jp8:s.jp9); }); return t; }
+  var h='<div class="note">Struktur Kurikulum Merdeka SMP — beban belajar per pekan. Total JP terhitung otomatis. Baris Kokurikuler/P5 dan Ekstrakurikuler berjalan di luar jam intrakurikuler reguler sesuai ketentuan.</div>';
+  h+='<div class="grid c3">'+ stat("Total JP Kelas 7", tot(7), "JP per pekan", 100) + stat("Total JP Kelas 8", tot(8), "JP per pekan", 100) + stat("Total JP Kelas 9", tot(9), "JP per pekan", 100) +'</div>';
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">Beban JP per Mata Pelajaran</h3><span class="sp"></span>'+
+    (canEdit()?'<button class="btn ghost sm" id="btnImporStr">Impor (CSV)</button><input type="file" id="fileImporStr" accept=".csv" class="hidden"><button class="btn teal sm" id="btnTambahStr">+ Tambah Mapel</button>':'')+
+    '<button class="btn gold sm" id="btnUnduhStr">Unduh</button></div>'+
+    tableHTML(["Mata Pelajaran","Jenis","JP Kelas 7","JP Kelas 8","JP Kelas 9","Aksi"],
+      DB.struktur.map(function(s){ return ["<b>"+esc(s.mapel)+"</b>", esc(s.jenis), canEdit()?'<input class="inline" type="number" min="0" max="12" style="width:64px" data-jp="'+s.id+'|7" value="'+s.jp7+'">':s.jp7, canEdit()?'<input class="inline" type="number" min="0" max="12" style="width:64px" data-jp="'+s.id+'|8" value="'+s.jp8+'">':s.jp8, canEdit()?'<input class="inline" type="number" min="0" max="12" style="width:64px" data-jp="'+s.id+'|9" value="'+s.jp9+'">':s.jp9,
+      canEdit()?'<button class="btn ghost sm" data-del-str="'+s.id+'">Hapus</button>':""]; })
+      .concat([["<b>TOTAL</b>","","<b>"+tot(7)+"</b>","<b>"+tot(8)+"</b>","<b>"+tot(9)+"</b>",""]])) +'</div>';
+  h+='<div class="card" style="margin-top:14px"><h3>Ekspor Template</h3><p class="small">Unduh template CSV struktur kurikulum untuk diisi di Excel, lalu impor kembali lewat tombol <b>Impor (CSV)</b>. Format kolom: Mapel;JP7;JP8;JP9;Jenis.</p><button class="btn ghost sm" id="btnTemplateStr">Unduh Template CSV</button></div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-jp]").forEach(function(inp){ inp.addEventListener("change",function(){
+    var pr=inp.getAttribute("data-jp").split("|"); var s=DB.struktur.filter(function(x){return x.id===pr[0];})[0];
+    if(s){ s["jp"+pr[1]]=Math.max(0,parseInt(inp.value||"0",10)); saveDB(); renderPage(); toast("Struktur diperbarui. Susun ulang SKBM/jadwal bila diperlukan."); } }); });
+  document.querySelectorAll("[data-del-str]").forEach(function(b){ b.onclick=function(){ DB.struktur=DB.struktur.filter(function(s){return s.id!==b.getAttribute("data-del-str");}); saveDB(); renderPage(); }; });
+  document.getElementById("btnUnduhStr").onclick=function(){
+    unduhMenu("Struktur Kurikulum Merdeka", "TA "+DB.pengaturan.tahunAjaran, tableHTML(["Mata Pelajaran","Jenis","JP 7","JP 8","JP 9"], DB.struktur.map(function(s){return [esc(s.mapel),esc(s.jenis),s.jp7,s.jp8,s.jp9];}).concat([["<b>TOTAL</b>","",tot(7),tot(8),tot(9)]])), true);
+  };
+  document.getElementById("btnTemplateStr").onclick=function(){
+    var csv="Mapel;JP7;JP8;JP9;Jenis\n"+DB.struktur.map(function(s){return [s.mapel,s.jp7,s.jp8,s.jp9,s.jenis].join(";");}).join("\n");
+    downloadBlob(csv,"text/csv","template-struktur-kurikulum.csv"); toast("Template CSV diunduh.");
+  };
+  var bi=document.getElementById("btnImporStr");
+  if(bi){ var fi=document.getElementById("fileImporStr");
+    bi.onclick=function(){ fi.click(); };
+    fi.addEventListener("change",function(){
+      var f=fi.files[0]; if(!f) return; var r=new FileReader();
+      r.onload=function(){
+        var lines=String(r.result).split(/\r?\n/).slice(1); var baru=[];
+        lines.forEach(function(ln){ if(!ln.trim()) return; var c=ln.split(/[;,]/); if(c.length>=4) baru.push({id:uid("st"), mapel:c[0].trim(), jp7:parseInt(c[1],10)||0, jp8:parseInt(c[2],10)||0, jp9:parseInt(c[3],10)||0, jenis:(c[4]||"Intrakurikuler").trim()}); });
+        if(baru.length){ DB.struktur=baru; saveDB(); renderPage(); toast("Impor berhasil: "+baru.length+" mapel."); } else toast("Tidak ada baris terbaca. Gunakan template CSV.");
+      };
+      r.readAsText(f);
+    });
+  }
+  var bt=document.getElementById("btnTambahStr");
+  if(bt) bt.onclick=function(){
+    openModal('<h3>Tambah Mata Pelajaran</h3><div class="form-grid"><div class="full"><label>Nama Mapel</label><input id="stNama"></div>'+
+     '<div><label>JP Kelas 7</label><input type="number" id="stJ7" value="2" min="0"></div><div><label>JP Kelas 8</label><input type="number" id="stJ8" value="2" min="0"></div>'+
+     '<div><label>JP Kelas 9</label><input type="number" id="stJ9" value="2" min="0"></div>'+
+     '<div><label>Jenis</label><select id="stJenis"><option>Intrakurikuler</option><option>Muatan Lokal</option><option>Kokurikuler</option><option>Ekstrakurikuler</option><option>Layanan</option></select></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="stSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("stSimpan").onclick=function(){
+      var n=document.getElementById("stNama").value.trim(); if(!n){ toast("Nama mapel wajib diisi."); return; }
+      DB.struktur.push({id:uid("st"), mapel:n, jp7:+document.getElementById("stJ7").value||0, jp8:+document.getElementById("stJ8").value||0, jp9:+document.getElementById("stJ9").value||0, jenis:document.getElementById("stJenis").value});
+      saveDB(); closeModal(); renderPage(); toast("Mapel ditambahkan.");
+    };
+  };
+};
+</script>
+<script>
+"use strict";
+/* ================= 5. SKBM ================= */
+PAGES.skbm = function(el){
+  var p=DB.pengaturan;
+  var guruMode = SESI.peran==="guru";
+  var daftar = guruMode ? DB.skbm.filter(function(s){return s.guruId===SESI.guruId;}) : DB.skbm;
+  var perGuru = DB.guru.map(function(g){ return {g:g, jp:totalJP(g.id), n:DB.skbm.filter(function(s){return s.guruId===g.id;}).length}; });
+  var mapelTanpa = []; STRUKTUR_AWAL.forEach(function(s){ if(s[4]==="Intrakurikuler" && !mapelGuru(DB,s[0]).length) mapelTanpa.push(s[0]); });
+  var kelasTanpa = KELAS.filter(function(k){ return !DB.skbm.some(function(s){return s.kelas===k;}); });
+  var h="";
+  if(DB.skbmSah.status==="Disahkan") h+='<div class="note" style="background:#e2f3e7;border-color:var(--ok);color:#14532d">✔ SKBM TA '+esc(p.tahunAjaran)+' telah <b>disahkan</b> oleh '+esc(DB.skbmSah.oleh)+' pada '+esc(DB.skbmSah.tanggal)+'.</div>';
+  if(mapelTanpa.length) h+='<div class="alert-bad">Mapel pada struktur yang <b>belum ada gurunya</b>: '+mapelTanpa.map(esc).join(", ")+'.</div>';
+  if(kelasTanpa.length) h+='<div class="alert-bad">Kelas yang <b>belum memiliki plotting</b>: '+kelasTanpa.join(", ")+'.</div>';
+  if(!guruMode){
+    h+='<div class="card"><div class="toolbar"><h3 style="margin:0">Rekap Beban Mengajar per Guru</h3><span class="sp"></span><button class="btn gold sm" id="btnUnduhSKBM">Unduh SKBM</button>'+
+      (SESI.peran==="kepsek" && DB.skbmSah.status!=="Disahkan" ? '<button class="btn teal sm" id="btnSahkan">✔ Sahkan SKBM</button>' : '')+
+      (canEdit() ? '<button class="btn ghost sm" id="btnResetSKBM">Susun Ulang dari Struktur</button>' : '')+'</div>'+
+      tableHTML(["Guru","Mapel Utama","Plotting","Total JP","Status Beban"], perGuru.map(function(x){
+        var st = x.g.mapel==="" ? '<span class="tag info">Tanpa mapel utama</span>' : (x.jp<24 ? '<span class="tag warn">Kurang dari 24 JP</span>' : (x.jp>36 ? '<span class="tag bad">Melebihi beban wajar</span>' : '<span class="tag ok">Tuntas</span>'));
+        return [esc(x.g.nama), esc(x.g.mapel||"-"), x.n+" kelas", "<b>"+x.jp+" JP</b>", st]; })) +'</div>';
+  }
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">'+(guruMode?"SKBM Saya":"Detail Plotting Guru – Mapel – Kelas")+'</h3><span class="sp"></span>'+
+    (guruMode?'<button class="btn gold sm" id="btnUnduhSKBM2">Unduh SKBM Saya</button>':'')+
+    (canEdit()?'<button class="btn teal sm" id="btnTambahSKBM">+ Tambah Plotting</button>':'')+'</div>'+
+    tableHTML(["Guru","Mapel","Kelas","JP","Aksi"], daftar.map(function(s){ var g=guruById(DB,s.guruId);
+      return [esc(g?g.nama:"—"), esc(s.mapel), "<b>"+s.kelas+"</b>", s.jp, canEdit()?'<button class="btn ghost sm" data-del-skbm="'+s.id+'">Hapus</button>':""]; })) +
+    (guruMode?'<p class="small">Total beban mengajar saya: <b>'+totalJP(SESI.guruId)+' JP</b>'+(totalJP(SESI.guruId)<24?' — <span class="tag warn">belum mencapai 24 JP</span>':' — <span class="tag ok">tuntas ≥ 24 JP</span>')+'</p>':'')+
+    '</div>';
+  el.innerHTML=h;
+  function unduhSKBM(rows){
+    unduhMenu("Surat Keputusan Pembagian Tugas Mengajar (SKBM)", "TA "+p.tahunAjaran+" · Semester "+p.semester+" · Status: "+DB.skbmSah.status,
+      tableHTML(["No","Nama Guru","Mata Pelajaran","Kelas","JP"], rows.map(function(s,i){ var g=guruById(DB,s.guruId); return [i+1, esc(g?g.nama:"—"), esc(s.mapel), s.kelas, s.jp]; })), true);
+  }
+  var b1=document.getElementById("btnUnduhSKBM"); if(b1) b1.onclick=function(){ unduhSKBM(DB.skbm); };
+  var b2=document.getElementById("btnUnduhSKBM2"); if(b2) b2.onclick=function(){ unduhSKBM(daftar); };
+  var bs=document.getElementById("btnSahkan");
+  if(bs) bs.onclick=function(){ DB.skbmSah={oleh:"Kepala Sekolah", tanggal:tglIndo(new Date()), status:"Disahkan"}; saveDB(); renderPage(); toast("SKBM disahkan."); };
+  var br=document.getElementById("btnResetSKBM");
+  if(br) br.onclick=function(){ DB.skbm=buatSKBM(DB); DB.jadwal=buatJadwal(DB); DB.skbmSah={oleh:"",tanggal:"",status:"Belum disahkan"}; saveDB(); renderPage(); toast("SKBM & jadwal disusun ulang dari struktur kurikulum."); };
+  document.querySelectorAll("[data-del-skbm]").forEach(function(b){ b.onclick=function(){ DB.skbm=DB.skbm.filter(function(s){return s.id!==b.getAttribute("data-del-skbm");}); saveDB(); renderPage(); toast("Plotting dihapus. Jadwal perlu disusun ulang bila berubah."); }; });
+  var bt=document.getElementById("btnTambahSKBM");
+  if(bt) bt.onclick=function(){
+    openModal('<h3>Tambah Plotting SKBM</h3><div class="form-grid">'+
+     '<div class="full"><label>Guru</label><select id="skGuru">'+DB.guru.map(function(g){return '<option value="'+g.id+'">'+esc(g.nama)+(g.mapel?" — "+esc(g.mapel):"")+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Mapel</label><select id="skMapel">'+DB.struktur.map(function(s){return '<option>'+esc(s.mapel)+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Kelas</label><select id="skKelas">'+KELAS.map(function(k){return '<option>'+k+'</option>';}).join("")+'</select></div>'+
+     '<div><label>JP per pekan</label><input type="number" id="skJP" value="2" min="1" max="12"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="skSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("skSimpan").onclick=function(){
+      DB.skbm.push({id:uid("sk"), guruId:document.getElementById("skGuru").value, mapel:document.getElementById("skMapel").value, kelas:document.getElementById("skKelas").value, jp:+document.getElementById("skJP").value||1});
+      saveDB(); closeModal(); renderPage(); toast("Plotting ditambahkan.");
+    };
+  };
+};
+
+/* ================= 6. JADWAL PELAJARAN ================= */
+var jadwalState = {mode:"kelas", kelas:"7A", guruId:"g1"};
+function deteksiBentrok(){
+  var bentrok=[], seen={};
+  KELAS.forEach(function(k){
+    for(var key in DB.jadwal[k]){
+      var cell=DB.jadwal[k][key]; var parts=key.split("|"); var gk=cell.guruId+"|"+parts[1]+"|"+parts[2];
+      if(seen[gk]) bentrok.push({kelas:k, hari:HARI[+parts[1]], jam:+parts[2]+1, guruId:cell.guruId, dengan:seen[gk]});
+      else seen[gk]=k;
+    }
+  });
+  return bentrok;
+}
+function selBentrokSet(){
+  var set={}, seen={};
+  KELAS.forEach(function(k){ for(var key in DB.jadwal[k]){ var cell=DB.jadwal[k][key]; var parts=key.split("|"); var gk=cell.guruId+"|"+parts[1]+"|"+parts[2];
+    if(seen[gk]){ set[k+"|"+key]=true; set[seen[gk]+"|"+gk.replace(cell.guruId,cell.guruId)]=true; set[seen[gk]+"|"+seen[gk].split("|").length]; }
+    else seen[gk]=k; } });
+  /* penandaan sederhana: kumpulkan semua sel guru yang muncul >1 kali di slot sama */
+  var hit={};
+  KELAS.forEach(function(k){ for(var key in DB.jadwal[k]){ var cell=DB.jadwal[k][key]; var parts=key.split("|"); var gk=cell.guruId+"|"+parts[1]+"|"+parts[2]; (hit[gk]=hit[gk]||[]).push(k+"||"+key); } });
+  var out={};
+  for(var gk2 in hit){ if(hit[gk2].length>1) hit[gk2].forEach(function(x){ out[x]=true; }); }
+  return out;
+}
+PAGES.jadwal = function(el){
+  var guruMode = SESI.peran==="guru";
+  if(guruMode) jadwalState.mode="guru", jadwalState.guruId=SESI.guruId;
+  var bentrok = deteksiBentrok();
+  var bentrokSet = selBentrokSet();
+  var h='<div class="toolbar"><label><b>Tampilan:</b></label>'+
+   '<select id="jdMode" class="inline"'+(guruMode?" disabled":"")+'><option value="kelas"'+(jadwalState.mode==="kelas"?" selected":"")+'>Per Kelas</option><option value="guru"'+(jadwalState.mode==="guru"?" selected":"")+'>Per Guru</option><option value="gabungan"'+(jadwalState.mode==="gabungan"?" selected":"")+'>Gabungan (ringkas)</option></select>';
+  if(jadwalState.mode==="kelas") h+='<select id="jdKelas" class="inline">'+KELAS.map(function(k){return '<option'+(jadwalState.kelas===k?" selected":"")+'>'+k+'</option>';}).join("")+'</select>';
+  if(jadwalState.mode==="guru") h+='<select id="jdGuru" class="inline"'+(guruMode?" disabled":"")+'>'+DB.guru.map(function(g){return '<option value="'+g.id+'"'+(jadwalState.guruId===g.id?" selected":"")+'>'+esc(g.nama)+'</option>';}).join("")+'</select>';
+  h+='<span class="sp"></span>'+(canEdit()?'<button class="btn ghost sm" id="btnSusunJadwal">↻ Susun Ulang dari SKBM</button>':'')+'<button class="btn gold sm" id="btnUnduhJadwal">Unduh Jadwal</button></div>';
+  if(bentrok.length) h+='<div class="alert-bad"><b>Terdeteksi '+bentrok.length+' bentrok guru:</b> '+bentrok.slice(0,6).map(function(b){return esc(namaGuru(b.guruId))+" — "+b.hari+" jam ke-"+b.jam+" di kelas "+b.dengan+" & "+b.kelas;}).join("; ")+(bentrok.length>6?" …":"")+'</div>';
+  else h+='<div class="note" style="background:#e2f3e7;border-color:var(--ok);color:#14532d">✔ Tidak ada bentrok guru pada jadwal saat ini (guru yang sama tidak berada di dua kelas pada jam yang sama).</div>';
+  if(canEdit() && jadwalState.mode==="kelas") h+='<p class="small">Klik sel jadwal untuk mengubah/mengosongkan isi sel (mode Wakakur). Sel merah = bentrok.</p>';
+
+  function gridKelas(k){
+    var t='<div class="tbl-wrap"><table class="sched"><thead><tr><th>Jam</th>'+HARI.map(function(x){return "<th>"+x+"</th>";}).join("")+'</tr></thead><tbody>';
+    for(var j=0;j<10;j++){ t+='<tr><td><b>'+(j+1)+'</b></td>';
+      for(var hh=0;hh<6;hh++){ var key=k+"|"+hh+"|"+j; var cell=DB.jadwal[k][key];
+        var isB = bentrokSet[k+"||"+key];
+        t+='<td class="slot'+(isB?" clash":"")+'" data-sel="'+key+'">'+(cell?'<span class="mapel">'+esc(MAPEL_SINGKAT[cell.mapel]||cell.mapel)+'</span><span class="guru">'+esc(namaSingkat(namaGuru(cell.guruId)))+'</span>':"")+'</td>'; }
+      t+='</tr>'; }
+    return t+'</tbody></table></div>';
+  }
+  function gridGuru(gid){
+    var t='<div class="tbl-wrap"><table class="sched"><thead><tr><th>Jam</th>'+HARI.map(function(x){return "<th>"+x+"</th>";}).join("")+'</tr></thead><tbody>';
+    for(var j=0;j<10;j++){ t+='<tr><td><b>'+(j+1)+'</b></td>';
+      for(var hh=0;hh<6;hh++){ var isi="";
+        KELAS.forEach(function(k){ var cell=DB.jadwal[k][k+"|"+hh+"|"+j]; if(cell && cell.guruId===gid) isi='<span class="mapel">'+esc(MAPEL_SINGKAT[cell.mapel]||cell.mapel)+'</span><span class="guru">Kelas '+k+'</span>'; });
+        t+='<td>'+isi+'</td>'; }
+      t+='</tr>'; }
+    return t+'</tbody></table></div>';
+  }
+  if(jadwalState.mode==="kelas") h+='<div class="card"><h3>Jadwal Kelas '+jadwalState.kelas+'</h3>'+gridKelas(jadwalState.kelas)+'</div>';
+  else if(jadwalState.mode==="guru") h+='<div class="card"><h3>Jadwal Mengajar — '+esc(namaGuru(jadwalState.guruId))+'</h3>'+gridGuru(jadwalState.guruId)+'<p class="small">Total beban: <b>'+totalJP(jadwalState.guruId)+' JP</b> per pekan.</p></div>';
+  else {
+    h+='<div class="card"><h3>Jadwal Gabungan — Ringkasan per Kelas</h3>'+ tableHTML(["Kelas","JP Terjadwal","Kebutuhan JP (SKBM)","Status"], KELAS.map(function(k){
+      var n=0; for(var key in DB.jadwal[k]) n++; var butuh=0; DB.skbm.forEach(function(s){ if(s.kelas===k) butuh+=s.jp; });
+      return ["<b>"+k+"</b>", n, butuh, n>=butuh?'<span class="tag ok">Lengkap</span>':'<span class="tag warn">Kurang '+(butuh-n)+' JP</span>']; })) +'</div>';
+  }
+  el.innerHTML=h;
+  document.getElementById("jdMode").addEventListener("change",function(e){ jadwalState.mode=e.target.value; renderPage(); });
+  var jk=document.getElementById("jdKelas"); if(jk) jk.addEventListener("change",function(e){ jadwalState.kelas=e.target.value; renderPage(); });
+  var jg=document.getElementById("jdGuru"); if(jg) jg.addEventListener("change",function(e){ jadwalState.guruId=e.target.value; renderPage(); });
+  var bsj=document.getElementById("btnSusunJadwal"); if(bsj) bsj.onclick=function(){ DB.jadwal=buatJadwal(DB); saveDB(); renderPage(); toast("Jadwal disusun ulang dari SKBM."); };
+  document.getElementById("btnUnduhJadwal").onclick=function(){
+    if(jadwalState.mode==="guru"){
+      var rows=[]; for(var j=0;j<10;j++){ var r=["Jam ke-"+(j+1)]; for(var hh=0;hh<6;hh++){ var isi=""; KELAS.forEach(function(k){ var c=DB.jadwal[k][k+"|"+hh+"|"+j]; if(c&&c.guruId===jadwalState.guruId) isi=(MAPEL_SINGKAT[c.mapel]||c.mapel)+" ("+k+")"; }); r.push(isi); } rows.push(r); }
+      unduhMenu("Jadwal Mengajar Guru", namaGuru(jadwalState.guruId)+" · TA "+DB.pengaturan.tahunAjaran, tableHTML(["Jam"].concat(HARI), rows), true);
+    } else {
+      var k2 = jadwalState.mode==="kelas"?jadwalState.kelas:"7A"; var rows2=[];
+      for(var j2=0;j2<10;j2++){ var r2=["Jam ke-"+(j2+1)]; for(var hh2=0;hh2<6;hh2++){ var c2=DB.jadwal[k2][k2+"|"+hh2+"|"+j2]; r2.push(c2?((MAPEL_SINGKAT[c2.mapel]||c2.mapel)+" — "+namaSingkat(namaGuru(c2.guruId))):""); } rows2.push(r2); }
+      unduhMenu("Jadwal Pelajaran Kelas "+k2, "TA "+DB.pengaturan.tahunAjaran+" · Semester "+DB.pengaturan.semester, tableHTML(["Jam"].concat(HARI), rows2), true);
+    }
+  };
+  if(canEdit() && jadwalState.mode==="kelas"){
+    document.querySelectorAll("[data-sel]").forEach(function(td){ td.onclick=function(){
+      var key=td.getAttribute("data-sel"); var kelas=jadwalState.kelas;
+      var opsi = DB.skbm.filter(function(s){return s.kelas===kelas;});
+      openModal('<h3>Ubah Sel Jadwal — Kelas '+kelas+'</h3><p class="small">'+key.replace(/\|/g," · ").replace(kelas+" · ","Hari ke-")+' (hari dihitung dari Senin)</p>'+
+       '<div class="field"><label>Isi sel</label><select id="selIsi" style="width:100%"><option value="">— Kosong —</option>'+
+       opsi.map(function(s){return '<option value="'+s.guruId+'|'+esc(s.mapel)+'">'+esc(s.mapel)+' — '+esc(namaGuru(s.guruId))+'</option>';}).join("")+'</select></div>'+
+       '<div style="display:flex;gap:8px"><button class="btn teal" id="selSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+      document.getElementById("selSimpan").onclick=function(){
+        var v=document.getElementById("selIsi").value;
+        if(!v) delete DB.jadwal[kelas][key]; else { var pr=v.split("|"); DB.jadwal[kelas][key]={guruId:pr[0], mapel:pr[1]}; }
+        saveDB(); closeModal(); renderPage();
+      };
+    }; });
+  }
+};
+function namaSingkat(n){ var base=n.split(",")[0]; var parts=base.split(" "); return parts.length>2 ? parts[0]+" "+parts[1] : base; }
+
+/* ================= 7. JADWAL PENDUKUNG ================= */
+PAGES.pendukung = function(el){
+  var guruMode = SESI.peran==="guru";
+  var piketRows = DB.piket.map(function(pk){
+    var tampil = guruMode ? pk.guruIds.indexOf(SESI.guruId)>=0 : true;
+    return {hari:pk.hari, guru:pk.guruIds.map(namaGuru), ids:pk.guruIds, tampil:tampil};
+  }).filter(function(r){ return r.tampil; });
+  var h='<div class="grid c2"><div class="card"><h3>🧑‍🏫 Jadwal Piket Harian Guru</h3>'+
+    tableHTML(["Hari","Guru Piket"], piketRows.map(function(r){ return ["<b>"+r.hari+"</b>", r.guru.map(esc).join("<br>")]; })) +
+    (canEdit()?'<div class="toolbar" style="margin-top:10px"><button class="btn teal sm" id="btnEditPiket">Ubah Jadwal Piket</button></div>':'')+'</div>';
+  h+='<div class="card"><h3>🎌 Petugas Upacara / Apel</h3>'+ tableHTML(["Waktu","Petugas","Kelas Petugas"], DB.upacara.map(function(u){return [esc(u.tanggal),esc(u.petugas),esc(u.kelasPetugas)];})) +'</div></div>';
+  var invalRows = guruMode ? DB.inval.filter(function(iv){ return iv.penggantiId===SESI.guruId || (guruById(DB,"")&&false); }) : DB.inval;
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">🔁 Guru Pengganti (Inval)</h3><span class="sp"></span>'+(canEdit()?'<button class="btn teal sm" id="btnTambahInval">+ Catat Inval</button>':'')+'</div>'+
+    tableHTML(["Tanggal","Guru Berhalangan","Pengganti","Kelas","Jam ke-","Keterangan","Aksi"], (guruMode?DB.inval:invalRows).map(function(iv){
+      return [esc(iv.tanggal), esc(iv.guruAbsen), esc(namaGuru(iv.penggantiId)), esc(iv.kelas), esc(iv.jam), esc(iv.keterangan), canEdit()?'<button class="btn ghost sm" data-del-inval="'+iv.id+'">Hapus</button>':""]; })) +
+    '<p class="small">Inval dicatat Wakakur saat guru berhalangan; guru pengganti mengambil alih kelas sesuai jadwal pelajaran hari itu.</p></div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-del-inval]").forEach(function(b){ b.onclick=function(){ DB.inval=DB.inval.filter(function(x){return x.id!==b.getAttribute("data-del-inval");}); saveDB(); renderPage(); }; });
+  var bp=document.getElementById("btnEditPiket");
+  if(bp) bp.onclick=function(){
+    var fields=DB.piket.map(function(pk,i){
+      return '<div class="full"><label>Piket hari '+pk.hari+' (3 guru)</label><div style="display:flex;gap:6px">'+[0,1,2].map(function(n){
+        return '<select data-piket="'+i+'|'+n+'" style="flex:1">'+DB.guru.map(function(g){return '<option value="'+g.id+'"'+(pk.guruIds[n]===g.id?" selected":"")+'>'+esc(namaSingkat(g.nama))+'</option>';}).join("")+'</select>'; }).join("")+'</div></div>';
+    }).join("");
+    openModal('<h3>Ubah Jadwal Piket</h3><div class="form-grid">'+fields+'</div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="pkSimpan2">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("pkSimpan2").onclick=function(){
+      document.querySelectorAll("[data-piket]").forEach(function(sel){ var pr=sel.getAttribute("data-piket").split("|"); DB.piket[+pr[0]].guruIds[+pr[1]]=sel.value; });
+      saveDB(); closeModal(); renderPage(); toast("Jadwal piket diperbarui.");
+    };
+  };
+  var bi=document.getElementById("btnTambahInval");
+  if(bi) bi.onclick=function(){
+    openModal('<h3>Catat Guru Pengganti (Inval)</h3><div class="form-grid">'+
+     '<div><label>Tanggal</label><input type="date" id="ivTgl" value="2026-10-05"></div>'+
+     '<div><label>Guru Berhalangan</label><input id="ivAbsen" placeholder="Nama guru"></div>'+
+     '<div><label>Guru Pengganti</label><select id="ivGanti">'+DB.guru.map(function(g){return '<option value="'+g.id+'">'+esc(g.nama)+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Kelas</label><select id="ivKelas">'+KELAS.map(function(k){return '<option>'+k+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Jam ke-</label><input id="ivJam" placeholder="mis. 3–4"></div>'+
+     '<div><label>Keterangan</label><input id="ivKet" placeholder="mis. Izin sakit"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="ivSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("ivSimpan").onclick=function(){
+      DB.inval.push({id:uid("iv"), tanggal:document.getElementById("ivTgl").value, guruAbsen:document.getElementById("ivAbsen").value||"—", penggantiId:document.getElementById("ivGanti").value, kelas:document.getElementById("ivKelas").value, jam:document.getElementById("ivJam").value||"—", keterangan:document.getElementById("ivKet").value||""});
+      saveDB(); closeModal(); renderPage(); toast("Inval dicatat.");
+    };
+  };
+};
+</script>
+<script>
+"use strict";
+/* ================= 8. EKSKUL & P5 ================= */
+PAGES.ekskul = function(el){
+  var h='<div class="card"><div class="toolbar"><h3 style="margin:0">Ekstrakurikuler</h3><span class="sp"></span>'+(canEdit()?'<button class="btn teal sm" id="btnTambahEkskul">+ Tambah Ekskul</button>':'')+'<button class="btn gold sm" id="btnUnduhEkskul">Unduh</button></div>'+
+   tableHTML(["Kegiatan","Pembina","Hari","Jam","Tempat","Peserta","Aksi"], DB.ekskul.map(function(e){
+     return ["<b>"+esc(e.nama)+"</b>", esc(namaGuru(e.pembinaId)), esc(e.hari), esc(e.jam), esc(e.tempat), esc(e.peserta), canEdit()?'<button class="btn ghost sm" data-del-ekskul="'+e.id+'">Hapus</button>':""]; })) +'</div>';
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">Kokurikuler / Projek Penguatan Profil Pelajar Pancasila (P5)</h3><span class="sp"></span>'+(canEdit()?'<button class="btn teal sm" id="btnTambahP5">+ Tambah Projek P5</button>':'')+'</div>'+
+   tableHTML(["Tema Projek","Tingkat","Dimensi Profil Lulusan","Koordinator","Tim Fasilitator","Jadwal Blok","Aksi"], DB.p5.map(function(pp){
+     return ["<b>"+esc(pp.tema)+"</b>", "Kelas "+esc(pp.tingkat), esc(pp.dimensi), esc(namaGuru(pp.koordinatorId)), esc(pp.fasilitator), esc(pp.jadwalBlok), canEdit()?'<button class="btn ghost sm" data-del-p5="'+pp.id+'">Hapus</button>':""]; })) +'</div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-del-ekskul]").forEach(function(b){ b.onclick=function(){ DB.ekskul=DB.ekskul.filter(function(x){return x.id!==b.getAttribute("data-del-ekskul");}); saveDB(); renderPage(); }; });
+  document.querySelectorAll("[data-del-p5]").forEach(function(b){ b.onclick=function(){ DB.p5=DB.p5.filter(function(x){return x.id!==b.getAttribute("data-del-p5");}); saveDB(); renderPage(); }; });
+  document.getElementById("btnUnduhEkskul").onclick=function(){
+    unduhMenu("Jadwal Ekstrakurikuler & Kokurikuler P5", "TA "+DB.pengaturan.tahunAjaran,
+      "<h4>Ekstrakurikuler</h4>"+tableHTML(["Kegiatan","Pembina","Hari","Jam","Tempat","Peserta"], DB.ekskul.map(function(e){return [esc(e.nama),esc(namaGuru(e.pembinaId)),esc(e.hari),esc(e.jam),esc(e.tempat),esc(e.peserta)];}))+
+      "<h4>Projek P5</h4>"+tableHTML(["Tema","Tingkat","Koordinator","Jadwal Blok"], DB.p5.map(function(pp){return [esc(pp.tema),"Kelas "+pp.tingkat,esc(namaGuru(pp.koordinatorId)),esc(pp.jadwalBlok)];})), true);
+  };
+  var be=document.getElementById("btnTambahEkskul");
+  if(be) be.onclick=function(){
+    openModal('<h3>Tambah Ekstrakurikuler</h3><div class="form-grid"><div class="full"><label>Nama Kegiatan</label><input id="ekNama"></div>'+
+     '<div><label>Pembina</label><select id="ekPembina">'+DB.guru.map(function(g){return '<option value="'+g.id+'">'+esc(g.nama)+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Hari</label><select id="ekHari">'+HARI.concat(["Minggu"]).map(function(x){return '<option>'+x+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Jam</label><input id="ekJam" placeholder="15.00–16.30"></div><div><label>Tempat</label><input id="ekTempat"></div>'+
+     '<div class="full"><label>Peserta</label><input id="ekPeserta" placeholder="Kelas 7–9"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="ekSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("ekSimpan").onclick=function(){
+      var n=document.getElementById("ekNama").value.trim(); if(!n){ toast("Nama kegiatan wajib diisi."); return; }
+      DB.ekskul.push({id:uid("e"), nama:n, pembinaId:document.getElementById("ekPembina").value, hari:document.getElementById("ekHari").value, jam:document.getElementById("ekJam").value||"—", tempat:document.getElementById("ekTempat").value||"—", peserta:document.getElementById("ekPeserta").value||"—"});
+      saveDB(); closeModal(); renderPage(); toast("Ekstrakurikuler ditambahkan.");
+    };
+  };
+  var bp=document.getElementById("btnTambahP5");
+  if(bp) bp.onclick=function(){
+    openModal('<h3>Tambah Projek P5</h3><div class="form-grid"><div class="full"><label>Tema Projek</label><input id="p5Tema"></div>'+
+     '<div><label>Tingkat</label><select id="p5Tingkat"><option>7</option><option>8</option><option>9</option></select></div>'+
+     '<div><label>Koordinator</label><select id="p5Koord">'+DB.guru.map(function(g){return '<option value="'+g.id+'">'+esc(g.nama)+'</option>';}).join("")+'</select></div>'+
+     '<div class="full"><label>Dimensi Profil Lulusan</label><input id="p5Dimensi" placeholder="mis. Gotong royong, Kreatif"></div>'+
+     '<div><label>Tim Fasilitator</label><input id="p5Fas"></div><div><label>Jadwal Blok</label><input id="p5Blok" placeholder="Blok 1: Sep–Okt 2026"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="p5Simpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("p5Simpan").onclick=function(){
+      var n=document.getElementById("p5Tema").value.trim(); if(!n){ toast("Tema wajib diisi."); return; }
+      DB.p5.push({id:uid("p"), tema:n, dimensi:document.getElementById("p5Dimensi").value||"—", koordinatorId:document.getElementById("p5Koord").value, tingkat:document.getElementById("p5Tingkat").value, jadwalBlok:document.getElementById("p5Blok").value||"—", fasilitator:document.getElementById("p5Fas").value||"—"});
+      saveDB(); closeModal(); renderPage(); toast("Projek P5 ditambahkan.");
+    };
+  };
+};
+
+/* ================= 9. PERANGKAT AJAR ================= */
+PAGES.perangkat = function(el){
+  var guruMode = SESI.peran==="guru";
+  var statusTag = ['<span class="tag bad">Belum</span>','<span class="tag warn">Masuk</span>','<span class="tag ok">Terverifikasi</span>'];
+  function persen(g){ var n=0; DOK_PERANGKAT.forEach(function(d){ if(DB.perangkat[g.id][d]>=1) n++; }); return Math.round(n/DOK_PERANGKAT.length*100); }
+  function persenVerif(g){ var n=0; DOK_PERANGKAT.forEach(function(d){ if(DB.perangkat[g.id][d]===2) n++; }); return Math.round(n/DOK_PERANGKAT.length*100); }
+  var h="";
+  if(!guruMode){
+    var perMapel={};
+    DB.guru.forEach(function(g){ if(!g.mapel) return; perMapel[g.mapel]=perMapel[g.mapel]||{n:0,masuk:0}; perMapel[g.mapel].n++; perMapel[g.mapel].masuk+=persen(g); });
+    var mapelRows = Object.keys(perMapel).map(function(m){ var v=perMapel[m]; return [esc(m), v.n+" guru", Math.round(v.masuk/v.n)+"%"]; });
+    h+='<div class="grid c2"><div class="card"><h3>Rekap Kelengkapan per Guru</h3><p class="small">Klik status pada tabel di bawah untuk mengubah: Belum → Masuk → Terverifikasi (khusus Wakakur).</p></div>'+
+       '<div class="card"><h3>Rekap per Mata Pelajaran</h3>'+tableHTML(["Mapel","Jumlah Guru","Rata-rata Kelengkapan"], mapelRows)+'</div></div>';
+  }
+  var daftarGuru = guruMode ? DB.guru.filter(function(g){return g.id===SESI.guruId;}) : DB.guru;
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">'+(guruMode?"Status Perangkat Ajar Saya":"Monitoring Perangkat Ajar per Guru")+' — Semester '+esc(DB.pengaturan.semester)+'</h3><span class="sp"></span><button class="btn gold sm" id="btnUnduhPerangkat">Unduh Rekap</button></div>'+
+   tableHTML(["Guru","Mapel"].concat(DOK_PERANGKAT).concat(["Kelengkapan","Terverifikasi"]), daftarGuru.map(function(g){
+     var cells=[esc(g.nama), esc(g.mapel||"-")];
+     DOK_PERANGKAT.forEach(function(d){ var st=DB.perangkat[g.id][d];
+       cells.push(canEdit() ? '<button class="btn ghost sm" data-perangkat="'+g.id+'|'+esc(d)+'" title="Klik untuk mengubah status">'+statusTag[st]+'</button>' : statusTag[st]); });
+     cells.push('<div class="progress"><i style="width:'+persen(g)+'%"></i></div> '+persen(g)+"%");
+     cells.push(persenVerif(g)+"%");
+     return cells;
+   })) +'</div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-perangkat]").forEach(function(b){ b.onclick=function(){
+    var pr=b.getAttribute("data-perangkat").split("|"); var cur=DB.perangkat[pr[0]][pr[1]];
+    DB.perangkat[pr[0]][pr[1]] = (cur+1)%3; saveDB(); renderPage();
+  }; });
+  document.getElementById("btnUnduhPerangkat").onclick=function(){
+    var rows=daftarGuru.map(function(g){ var r=[esc(g.nama), esc(g.mapel||"-")]; DOK_PERANGKAT.forEach(function(d){ r.push(["Belum","Masuk","Terverifikasi"][DB.perangkat[g.id][d]]); }); r.push(persen(g)+"%"); return r; });
+    unduhMenu("Rekap Kelengkapan Perangkat Ajar Guru", "Semester "+DB.pengaturan.semester+" TA "+DB.pengaturan.tahunAjaran, tableHTML(["Guru","Mapel"].concat(DOK_PERANGKAT).concat(["Kelengkapan"]), rows), true);
+  };
+};
+
+/* ================= 10. SUPERVISI ================= */
+PAGES.supervisi = function(el){
+  var h='<div class="card"><div class="toolbar"><h3 style="margin:0">Jadwal & Hasil Supervisi Akademik — Semester '+esc(DB.pengaturan.semester)+'</h3><span class="sp"></span>'+
+   (canEdit()?'<button class="btn teal sm" id="btnTambahSup">+ Tambah Supervisi</button>':'')+'<button class="btn gold sm" id="btnUnduhSup">Unduh Rekap</button></div>'+
+   tableHTML(["Tanggal","Guru Disupervisi","Kelas","Aspek","Supervisor","Hasil","Tindak Lanjut","Aksi"], DB.supervisi.map(function(s){
+     return [esc(s.tanggal), esc(namaGuru(s.guruId)), esc(s.kelas), esc(s.aspek), esc(s.supervisor), esc(s.hasil), esc(s.tindakLanjut), canEdit()?'<button class="btn ghost sm" data-del-sup="'+s.id+'">Hapus</button>':""]; })) +
+   '<p class="small">Rekap semester ini: <b>'+DB.supervisi.length+' guru</b> telah disupervisi dari '+DB.guru.length+' guru.</p></div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-del-sup]").forEach(function(b){ b.onclick=function(){ DB.supervisi=DB.supervisi.filter(function(x){return x.id!==b.getAttribute("data-del-sup");}); saveDB(); renderPage(); }; });
+  document.getElementById("btnUnduhSup").onclick=function(){
+    unduhMenu("Rekap Supervisi Akademik", "Semester "+DB.pengaturan.semester+" TA "+DB.pengaturan.tahunAjaran,
+      tableHTML(["Tanggal","Guru","Kelas","Aspek","Supervisor","Hasil","Tindak Lanjut"], DB.supervisi.map(function(s){return [esc(s.tanggal),esc(namaGuru(s.guruId)),esc(s.kelas),esc(s.aspek),esc(s.supervisor),esc(s.hasil),esc(s.tindakLanjut)];})), true);
+  };
+  var bt=document.getElementById("btnTambahSup");
+  if(bt) bt.onclick=function(){
+    openModal('<h3>Tambah Jadwal Supervisi</h3><div class="form-grid">'+
+     '<div><label>Tanggal</label><input type="date" id="spTgl" value="2026-10-12"></div>'+
+     '<div><label>Guru Disupervisi</label><select id="spGuru">'+DB.guru.map(function(g){return '<option value="'+g.id+'">'+esc(g.nama)+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Kelas</label><select id="spKelas">'+KELAS.map(function(k){return '<option>'+k+'</option>';}).join("")+'</select></div>'+
+     '<div><label>Aspek</label><select id="spAspek"><option>Pelaksanaan pembelajaran</option><option>Perangkat ajar</option><option>Penilaian & asesmen</option></select></div>'+
+     '<div><label>Supervisor</label><select id="spSup"><option>Wakakur</option><option>Kepala Sekolah</option></select></div>'+
+     '<div><label>Hasil</label><input id="spHasil" placeholder="Ringkasan hasil"></div>'+
+     '<div class="full"><label>Tindak Lanjut</label><input id="spTL" placeholder="Rencana tindak lanjut"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="spSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("spSimpan").onclick=function(){
+      DB.supervisi.push({id:uid("s"), tanggal:document.getElementById("spTgl").value, guruId:document.getElementById("spGuru").value, kelas:document.getElementById("spKelas").value, aspek:document.getElementById("spAspek").value, supervisor:document.getElementById("spSup").value, hasil:document.getElementById("spHasil").value||"—", tindakLanjut:document.getElementById("spTL").value||"—"});
+      saveDB(); closeModal(); renderPage(); toast("Supervisi ditambahkan.");
+    };
+  };
+};
+
+/* ================= 11. UJIAN & ASESMEN ================= */
+var CEK_UJIAN = [["soal","Soal & kisi-kisi masuk"],["penggandaan","Penggandaan soal selesai"],["beritaAcara","Berita acara disiapkan"],["daftarHadir","Daftar hadir pengawas & peserta"],["denah","Denah ruang & nomor peserta"]];
+PAGES.ujian = function(el){
+  var h = DB.ujian.map(function(u){
+    var done = CEK_UJIAN.filter(function(c){return u.cek[c[0]];}).length;
+    var pct = Math.round(done/CEK_UJIAN.length*100);
+    var lis = CEK_UJIAN.map(function(c){
+      return '<li class="'+(u.cek[c[0]]?"done":"")+'">'+(canEdit()?'<button class="box" data-cek="'+u.id+'|'+c[0]+'" style="cursor:pointer;background:'+(u.cek[c[0]]?"var(--ok)":"transparent")+'">'+(u.cek[c[0]]?"✓":"")+'</button>':'<span class="box">'+(u.cek[c[0]]?"✓":"")+'</span>')+'<span class="tx">'+c[1]+'</span></li>';
+    }).join("");
+    return '<div class="card" style="margin-bottom:14px"><div class="toolbar"><h3 style="margin:0">'+esc(u.nama)+'</h3><span class="sp"></span><span class="tag '+(pct===100?"ok":(pct>0?"warn":"bad"))+'">Kesiapan '+pct+'%</span></div>'+
+     '<div class="grid c2"><div>'+tableHTML(["Komponen","Isi"],[["Jadwal",esc(u.tanggal)],["Ketua Panitia",esc(u.ketua)],["Sekretaris",esc(u.sekretaris)],["Kebutuhan Ruang",esc(u.ruang)],["Pengawas Ruang",esc(u.pengawas)]])+'</div>'+
+     '<div><h3 style="font-size:14px">Checklist Kesiapan</h3><ul class="chk">'+lis+'</ul></div></div></div>';
+  }).join("");
+  h+='<div class="toolbar">'+(canEdit()?'<button class="btn teal" id="btnTambahUjian">+ Tambah Kegiatan Asesmen</button>':'')+'<button class="btn gold" id="btnUnduhUjian">Unduh Rekap Ujian</button></div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-cek]").forEach(function(b){ b.onclick=function(){ var pr=b.getAttribute("data-cek").split("|");
+    DB.ujian.forEach(function(u){ if(u.id===pr[0]) u.cek[pr[1]]=!u.cek[pr[1]]; }); saveDB(); renderPage(); }; });
+  document.getElementById("btnUnduhUjian").onclick=function(){
+    unduhMenu("Jadwal Ujian & Asesmen Sekolah", "TA "+DB.pengaturan.tahunAjaran,
+      tableHTML(["Kegiatan","Jadwal","Ketua Panitia","Sekretaris","Ruang","Kesiapan"], DB.ujian.map(function(u){ var d=CEK_UJIAN.filter(function(c){return u.cek[c[0]];}).length; return [esc(u.nama),esc(u.tanggal),esc(u.ketua),esc(u.sekretaris),esc(u.ruang), Math.round(d/CEK_UJIAN.length*100)+"%"]; })), true);
+  };
+  var bt=document.getElementById("btnTambahUjian");
+  if(bt) bt.onclick=function(){
+    openModal('<h3>Tambah Kegiatan Ujian/Asesmen</h3><div class="form-grid"><div class="full"><label>Nama Kegiatan</label><input id="ujNama" placeholder="mis. Asesmen Nasional / Try Out"></div>'+
+     '<div><label>Jadwal</label><input id="ujTgl" placeholder="mis. 2–4 Maret 2027"></div><div><label>Kebutuhan Ruang</label><input id="ujRuang" placeholder="21 ruang kelas"></div>'+
+     '<div><label>Ketua Panitia</label><input id="ujKetua"></div><div><label>Sekretaris</label><input id="ujSek"></div>'+
+     '<div class="full"><label>Pengawas Ruang</label><input id="ujPengawas"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="ujSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("ujSimpan").onclick=function(){
+      var n=document.getElementById("ujNama").value.trim(); if(!n){ toast("Nama kegiatan wajib diisi."); return; }
+      DB.ujian.push({id:uid("uj"), nama:n, tanggal:document.getElementById("ujTgl").value||"—", ketua:document.getElementById("ujKetua").value||"—", sekretaris:document.getElementById("ujSek").value||"—", ruang:document.getElementById("ujRuang").value||"—", pengawas:document.getElementById("ujPengawas").value||"—", cek:{soal:false,penggandaan:false,beritaAcara:false,daftarHadir:false,denah:false}});
+      saveDB(); closeModal(); renderPage(); toast("Kegiatan asesmen ditambahkan.");
+    };
+  };
+};
+
+/* ================= 12. PROGRAM KERJA & LAPORAN ================= */
+PAGES.proker = function(el){
+  var selesai=DB.proker.filter(function(x){return x.status==="Selesai";}).length;
+  var h='<div class="grid c3">'+stat("Program Kerja", DB.proker.length, "kegiatan TA "+DB.pengaturan.tahunAjaran, 100)+stat("Selesai", selesai, "kegiatan terealisasi", DB.proker.length?Math.round(selesai/DB.proker.length*100):0)+stat("Rapat Kurikulum", DB.rapat.length, "rapat tercatat dengan notulen", 100)+'</div>';
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">Program Kerja Wakakur Tahunan</h3><span class="sp"></span>'+(canEdit()?'<button class="btn teal sm" id="btnTambahProker">+ Tambah Program</button>':'')+'<button class="btn gold sm" id="btnUnduhProker">Unduh Program & Laporan</button></div>'+
+   tableHTML(["Kegiatan","Waktu","Status Realisasi","Keterangan","Aksi"], DB.proker.map(function(pp){
+     var st = pp.status==="Selesai"?'<span class="tag ok">Selesai</span>':(pp.status==="Berlangsung"?'<span class="tag warn">Berlangsung</span>':'<span class="tag bad">Belum</span>');
+     return [esc(pp.kegiatan), esc(pp.bulan), canEdit()?'<select class="inline" data-proker="'+pp.id+'"><option'+(pp.status==="Belum"?" selected":"")+'>Belum</option><option'+(pp.status==="Berlangsung"?" selected":"")+'>Berlangsung</option><option'+(pp.status==="Selesai"?" selected":"")+'>Selesai</option></select>':st, esc(pp.ket), canEdit()?'<button class="btn ghost sm" data-del-proker="'+pp.id+'">Hapus</button>':""]; })) +'</div>';
+  h+='<div class="card" style="margin-top:14px"><div class="toolbar"><h3 style="margin:0">Agenda Rapat Kurikulum & Notulen</h3><span class="sp"></span>'+(canEdit()?'<button class="btn teal sm" id="btnTambahRapat">+ Tambah Rapat</button>':'')+'</div>'+
+   tableHTML(["Tanggal","Agenda","Notulen Singkat","Peserta"], DB.rapat.map(function(r){ return [esc(r.tanggal), esc(r.agenda), esc(r.notulen), esc(r.peserta)]; })) +'</div>';
+  h+='<div class="card" style="margin-top:14px"><h3>Laporan Kurikulum Semester '+esc(DB.pengaturan.semester)+'</h3><p>Rekap otomatis semester ini: beban guru tuntas ≥24 JP sebanyak <b>'+DB.guru.filter(function(g){return totalJP(g.id)>=24;}).length+' dari '+DB.guru.length+' guru</b>; supervisi terlaksana <b>'+DB.supervisi.length+' guru</b>; kelengkapan perangkat ajar rata-rata <b>'+Math.round(DB.guru.reduce(function(a,g){ var n=0; DOK_PERANGKAT.forEach(function(d){ if(DB.perangkat[g.id][d]>=1)n++; }); return a+n/DOK_PERANGKAT.length*100; },0)/DB.guru.length)+'%</b>. Gunakan tombol <b>Unduh Program & Laporan</b> untuk mencetak laporan resmi berkop sekolah.</p></div>';
+  el.innerHTML=h;
+  document.querySelectorAll("[data-proker]").forEach(function(sel){ sel.addEventListener("change",function(){
+    DB.proker.forEach(function(pp){ if(pp.id===sel.getAttribute("data-proker")) pp.status=sel.value; }); saveDB(); renderPage(); }); });
+  document.querySelectorAll("[data-del-proker]").forEach(function(b){ b.onclick=function(){ DB.proker=DB.proker.filter(function(x){return x.id!==b.getAttribute("data-del-proker");}); saveDB(); renderPage(); }; });
+  document.getElementById("btnUnduhProker").onclick=function(){
+    unduhMenu("Program Kerja & Laporan Kurikulum", "TA "+DB.pengaturan.tahunAjaran+" · Semester "+DB.pengaturan.semester,
+      "<h4>Program Kerja Wakakur</h4>"+tableHTML(["Kegiatan","Waktu","Status","Keterangan"], DB.proker.map(function(pp){return [esc(pp.kegiatan),esc(pp.bulan),esc(pp.status),esc(pp.ket)];}))+
+      "<h4>Rapat Kurikulum</h4>"+tableHTML(["Tanggal","Agenda","Notulen"], DB.rapat.map(function(r){return [esc(r.tanggal),esc(r.agenda),esc(r.notulen)];})), true);
+  };
+  var bp=document.getElementById("btnTambahProker");
+  if(bp) bp.onclick=function(){
+    openModal('<h3>Tambah Program Kerja</h3><div class="form-grid"><div class="full"><label>Kegiatan</label><input id="prKeg"></div>'+
+     '<div><label>Waktu</label><input id="prBulan" placeholder="mis. Januari 2027"></div>'+
+     '<div><label>Status</label><select id="prStatus"><option>Belum</option><option>Berlangsung</option><option>Selesai</option></select></div>'+
+     '<div class="full"><label>Keterangan</label><input id="prKet"></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="prSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("prSimpan").onclick=function(){
+      var n=document.getElementById("prKeg").value.trim(); if(!n){ toast("Kegiatan wajib diisi."); return; }
+      DB.proker.push({id:uid("pr"), kegiatan:n, bulan:document.getElementById("prBulan").value||"—", status:document.getElementById("prStatus").value, ket:document.getElementById("prKet").value||""});
+      saveDB(); closeModal(); renderPage(); toast("Program ditambahkan.");
+    };
+  };
+  var br=document.getElementById("btnTambahRapat");
+  if(br) br.onclick=function(){
+    openModal('<h3>Tambah Rapat Kurikulum</h3><div class="form-grid"><div><label>Tanggal</label><input type="date" id="rpTgl" value="2026-10-05"></div>'+
+     '<div><label>Peserta</label><input id="rpPeserta" placeholder="Seluruh guru"></div>'+
+     '<div class="full"><label>Agenda</label><input id="rpAgenda"></div>'+
+     '<div class="full"><label>Notulen Singkat</label><textarea id="rpNotulen" rows="3"></textarea></div></div>'+
+     '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="rpSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("rpSimpan").onclick=function(){
+      var n=document.getElementById("rpAgenda").value.trim(); if(!n){ toast("Agenda wajib diisi."); return; }
+      DB.rapat.push({id:uid("rp"), tanggal:document.getElementById("rpTgl").value, agenda:n, notulen:document.getElementById("rpNotulen").value||"—", peserta:document.getElementById("rpPeserta").value||"—"});
+      saveDB(); closeModal(); renderPage(); toast("Rapat dicatat.");
+    };
+  };
+};
+
+/* ================= PENGATURAN ================= */
+PAGES.pengaturan = function(el){
+  var p=DB.pengaturan;
+  var h='<div class="grid c2"><div class="card"><h3>Identitas, Kop & Tahun Ajaran</h3><div class="form-grid">'+
+   fld("Nama Sekolah","pgNama",p.namaSekolah)+ fld("NPSN","pgNpsn",p.npsn)+
+   '<div class="full"><label>Alamat Sekolah</label><input id="pgAlamat" value="'+esc(p.alamat)+'"></div>'+
+   fld("Kepala Sekolah","pgKepsek",p.kepsek)+ fld("NIP Kepala Sekolah","pgNipKepsek",p.nipKepsek)+
+   fld("Wakakur","pgWakakur",p.wakakur)+ fld("NIP Wakakur","pgNipWakakur",p.nipWakakur)+
+   fld("Tahun Ajaran","pgTA",p.tahunAjaran)+
+   '<div><label>Semester Aktif</label><select id="pgSemester"><option'+(p.semester==="Ganjil"?" selected":"")+'>Ganjil</option><option'+(p.semester==="Genap"?" selected":"")+'>Genap</option></select></div></div>'+
+   (canEdit()?'<div style="margin-top:12px"><button class="btn teal" id="btnSimpanPg">Simpan Pengaturan</button></div>':'<p class="small">Kepala Sekolah hanya dapat melihat pengaturan.</p>')+'</div>';
+  h+='<div class="card"><h3>Pengaturan Koneksi</h3>'+
+   '<p class="small">Pola sama seperti LMS Terpadu & Sarpras: mode <b>terpusat</b> menghubungkan aplikasi ke server sekolah (URL API spreadsheet/PHP) dan data antarperangkat tersinkron; bila koneksi gagal, aplikasi otomatis kembali ke <b>mode lokal</b> perangkat ini.</p>'+
+   '<div class="field"><label>Mode Koneksi</label><select id="knMode" style="width:100%"><option value="lokal"'+(p.koneksi.mode==="lokal"?" selected":"")+'>Lokal (perangkat ini)</option><option value="terpusat"'+(p.koneksi.mode==="terpusat"?" selected":"")+'>Terpusat (server sekolah)</option></select></div>'+
+   '<div class="field"><label>URL API (Apps Script / api.php hosting sekolah)</label><input id="knUrl" placeholder="'+esc(DEFAULT_API_URL)+'" value="'+esc(p.koneksi.url||DEFAULT_API_URL)+'"></div>'+
+   '<div id="knStatus" class="small" style="margin-bottom:8px"></div>'+
+   (canEdit()?'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn teal sm" id="btnSimpanKn">Simpan Koneksi</button><button class="btn ghost sm" id="btnTesKn">Tes Koneksi</button><button class="btn gold sm" id="btnTarikServer">Masuk Server & Tarik Data</button></div>':'')+
+   '<p style="margin-top:10px">Status saat ini: <span class="mode-badge '+(SYNC.aktif?"terpusat":"lokal")+'">'+(SYNC.aktif?"MODE TERPUSAT":"MODE LOKAL")+'</span></p></div></div>';
+  h+='<div class="grid c2" style="margin-top:14px"><div class="card"><h3>Kelola Akun & Kata Sandi</h3>'+
+   '<p class="small">Akun: sulis (Wakakur), kepsek (Kepala Sekolah), dan satu akun guru per guru (username = nama depan). Ganti kata sandi akun yang sedang masuk lewat tombol <b>Ganti Sandi</b> di kiri bawah. Wakakur dapat mengatur ulang sandi akun lain di sini:</p>'+
+   (canEdit()?'<div class="form-grid"><div><label>Akun</label><select id="akUser">'+DB.users.map(function(u){return '<option value="'+esc(u.username)+'">'+esc(u.username)+' — '+esc(u.peran)+'</option>';}).join("")+'</select></div>'+
+   '<div><label>Kata Sandi Baru</label><input id="akPass" type="text" placeholder="min. 6 karakter"></div></div><div style="margin-top:10px"><button class="btn teal sm" id="btnResetPass">Atur Ulang Sandi Akun</button></div>':'<p class="small">(Hanya Wakakur yang dapat mengatur ulang sandi akun lain.)</p>')+'</div>';
+  h+='<div class="card"><h3>Backup & Restore Data</h3><p class="small">Seluruh data aplikasi (guru, SKBM, jadwal, kalender, perangkat ajar, dsb.) tersimpan di perangkat ini. Unduh backup JSON secara berkala; restore untuk memulihkan atau memindahkan data ke perangkat lain.</p>'+
+   '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn gold sm" id="btnBackup">⬇ Unduh Backup JSON</button>'+
+   (canEdit()?'<button class="btn ghost sm" id="btnRestore">⬆ Restore dari JSON</button><input type="file" id="fileRestore" accept=".json" class="hidden"><button class="btn ghost sm" id="btnResetData">↺ Kembalikan Data Awal</button>':'')+'</div></div></div>';
+  el.innerHTML=h;
+  function fld(label,id,val){ return '<div><label>'+label+'</label><input id="'+id+'" value="'+esc(val)+'"></div>'; }
+  var bs=document.getElementById("btnSimpanPg");
+  if(bs) bs.onclick=function(){
+    p.namaSekolah=document.getElementById("pgNama").value; p.npsn=document.getElementById("pgNpsn").value;
+    p.alamat=document.getElementById("pgAlamat").value; p.kepsek=document.getElementById("pgKepsek").value;
+    p.nipKepsek=document.getElementById("pgNipKepsek").value; p.wakakur=document.getElementById("pgWakakur").value;
+    p.nipWakakur=document.getElementById("pgNipWakakur").value; p.tahunAjaran=document.getElementById("pgTA").value;
+    p.semester=document.getElementById("pgSemester").value;
+    saveDB(); document.getElementById("topInfo").textContent="TA "+p.tahunAjaran+" · Semester "+p.semester; renderPage(); toast("Pengaturan tersimpan.");
+  };
+  var bk=document.getElementById("btnSimpanKn");
+  if(bk) bk.onclick=function(){ p.koneksi.mode=document.getElementById("knMode").value; p.koneksi.url=document.getElementById("knUrl").value.trim()||DEFAULT_API_URL; simpanLokal(); renderPage(); toast("Pengaturan koneksi tersimpan."); };
+  var bt=document.getElementById("btnTesKn");
+  if(bt) bt.onclick=function(){
+    var url=document.getElementById("knUrl").value.trim()||DEFAULT_API_URL; var st=document.getElementById("knStatus");
+    var urlAsli=p.koneksi.url; p.koneksi.url=url;
+    st.textContent="Menghubungi server (ping)…";
+    apiGet("ping", {}).then(function(j){
+      p.koneksi.url=urlAsli;
+      if(j && j.ok) st.innerHTML='✔ Server merespons ('+esc(j.service||"Kurikulum API")+'). Simpan koneksi sebagai <b>Terpusat</b>, lalu gunakan tombol <b>Masuk Server &amp; Tarik Data</b> atau masuk kembali dengan kata sandi untuk mengaktifkan MODE TERPUSAT.';
+      else st.innerHTML='✖ Server menjawab tidak dikenal — periksa URL API.';
+    }).catch(function(){ p.koneksi.url=urlAsli; st.innerHTML='✖ Koneksi gagal — aplikasi tetap berjalan pada <b>MODE LOKAL</b> (fallback otomatis). Periksa URL atau jaringan.'; });
+  };
+  var bts=document.getElementById("btnTarikServer");
+  if(bts) bts.onclick=function(){
+    var url=document.getElementById("knUrl").value.trim()||DEFAULT_API_URL;
+    p.koneksi.mode="terpusat"; p.koneksi.url=url; simpanLokal();
+    openModal('<h3>Masuk ke Server Sekolah</h3><p class="small">Masukkan kata sandi server untuk akun <b>'+esc(SESI.username)+'</b>. Setelah login berhasil, seluruh data ditarik dari spreadsheet server dan MODE TERPUSAT aktif.</p>'+
+     '<div class="field"><label>Kata Sandi Server</label><input type="password" id="tsPass" style="width:100%"></div><div id="tsErr"></div>'+
+     '<div style="display:flex;gap:8px"><button class="btn teal" id="tsMasuk">Masuk & Tarik Data</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("tsMasuk").onclick=function(){
+      var pw=document.getElementById("tsPass").value;
+      document.getElementById("tsErr").innerHTML="";
+      loginServer(SESI.username, pw).then(function(j){
+        if(j.ditolak){ document.getElementById("tsErr").innerHTML='<div class="err">'+esc(j.ditolak)+'</div>'; return; }
+        sesiDariServer(j);
+        aktifkanTerpusat().then(function(ok){
+          closeModal();
+          if(ok){ renderPage(); toast("MODE TERPUSAT aktif — data server kini dipakai."); }
+          else toast("Login server berhasil, tetapi data belum dapat ditarik.");
+        }).catch(function(e){ closeModal(); matikanTerpusat(e.message||"get_db gagal"); renderPage(); });
+      }).catch(function(){ document.getElementById("tsErr").innerHTML='<div class="err">Server tidak terjangkau. Periksa URL API / jaringan — aplikasi tetap pada MODE LOKAL.</div>'; });
+    };
+  };
+  var br2=document.getElementById("btnResetPass");
+  if(br2) br2.onclick=function(){
+    var user=document.getElementById("akUser").value, pass=document.getElementById("akPass").value;
+    if(pass.length<6){ toast("Kata sandi minimal 6 karakter."); return; }
+    DB.users.forEach(function(u){ if(u.username===user) u.passHash=hashPw(pass); }); saveDB();
+    if(SYNC.aktif && SYNC.token){
+      apiPost("change_password", {token:SYNC.token, username:user, new_password:pass}).then(function(j){
+        toast(j && j.ok ? "Sandi akun "+user+" diatur ulang (lokal & server)." : "Sandi lokal diatur ulang; server menjawab: "+((j&&j.error)||"gagal"));
+      }).catch(function(){ toast("Sandi lokal diatur ulang; server tidak terjangkau untuk akun ini."); });
+    } else toast("Sandi akun "+user+" diatur ulang.");
+  };
+  document.getElementById("btnBackup").onclick=function(){ downloadBlob(JSON.stringify(DB,null,2), "application/json", "backup-kurikulum-spensa-"+new Date().toISOString().slice(0,10)+".json"); toast("Backup JSON diunduh."); };
+  var brs=document.getElementById("btnRestore");
+  if(brs){ var fr=document.getElementById("fileRestore"); brs.onclick=function(){ fr.click(); };
+    fr.addEventListener("change",function(){ var f=fr.files[0]; if(!f) return; var r=new FileReader();
+      r.onload=function(){ try{ var d=JSON.parse(r.result); if(!d.guru||!d.skbm) throw new Error("format"); DB=d; saveDB(); renderPage(); toast("Data berhasil dipulihkan dari backup."); }catch(e){ toast("Berkas backup tidak valid."); } };
+      r.readAsText(f); });
+  }
+  var brd=document.getElementById("btnResetData");
+  if(brd) brd.onclick=function(){ openModal('<h3>Kembalikan Data Awal?</h3><p>Semua perubahan akan diganti data contoh awal (37 guru, SKBM & jadwal tersusun otomatis). Lanjutkan?</p><div style="display:flex;gap:8px"><button class="btn teal" id="rstYa">Ya, Kembalikan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+    document.getElementById("rstYa").onclick=function(){ DB=seedData(); saveDB(); closeModal(); renderPage(); toast("Data awal dipulihkan."); }; };
+};
+
+/* ---------- Ganti sandi sendiri ---------- */
+function formGantiPass(){
+  openModal('<h3>Ganti Kata Sandi</h3><div id="gpErr"></div><div class="form-grid">'+
+   '<div class="full"><label>Kata Sandi Lama</label><input type="password" id="gpLama"></div>'+
+   '<div><label>Kata Sandi Baru (min. 6)</label><input type="password" id="gpBaru"></div>'+
+   '<div><label>Konfirmasi Baru</label><input type="password" id="gpKonf"></div></div>'+
+   '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn teal" id="gpSimpan">Simpan</button><button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+  document.getElementById("gpSimpan").onclick=function(){
+    var lama=document.getElementById("gpLama").value, baru=document.getElementById("gpBaru").value, konf=document.getElementById("gpKonf").value;
+    var u=DB.users.filter(function(x){return x.username===SESI.username;})[0];
+    function err(m){ document.getElementById("gpErr").innerHTML='<div class="err">'+m+'</div>'; }
+    if(!u){ err("Akun tidak ditemukan."); return; }
+    if(u.passHash && u.passHash!==hashPw(lama)){ err("Kata sandi lama salah."); return; }
+    if(baru.length<6){ err("Kata sandi baru minimal 6 karakter."); return; }
+    if(baru!==konf){ err("Konfirmasi kata sandi tidak sama."); return; }
+    if(SYNC.aktif && SYNC.token){
+      if(!lama){ err("Untuk mode terpusat, kata sandi lama wajib diisi (diverifikasi server)."); return; }
+      apiPost("change_password", {token:SYNC.token, old_password:lama, new_password:baru}).then(function(j){
+        if(j && j.ok){ u.passHash=hashPw(baru); saveDB(); closeModal(); toast("Kata sandi berhasil diatur (server & lokal)."); }
+        else err("Server menolak: "+((j&&j.error)||"gagal mengganti sandi"));
+      }).catch(function(){ err("Server tidak terjangkau — sandi tidak diubah. Coba lagi saat MODE TERPUSAT aktif."); });
+      return;
+    }
+    u.passHash=hashPw(baru); saveDB(); closeModal(); toast("Kata sandi berhasil diatur.");
+  };
+}
+
+/* ---------- Inisialisasi ---------- */
+loadDB();
+document.getElementById("loginTA").textContent = DB.pengaturan.tahunAjaran;
+function attemptLogin(){
+  var u=document.getElementById("liUser").value.trim().toLowerCase(), p=document.getElementById("liPass").value;
+  var errEl=document.getElementById("loginErr");
+  function gagalLokal(pesanServer){
+    var hasil=doLogin(u,p);
+    if(hasil==="ok"){ showApp(); tampilBanner("ℹ️ Anda masuk pada <b>MODE LOKAL</b> (cadangan perangkat ini). "+(pesanServer?"Server menjawab: "+esc(pesanServer)+". ":"Server tidak terjangkau. ")+"Data server tidak ditarik pada sesi ini."); }
+    else if(hasil==="belum") errEl.innerHTML='<div class="err">Akun <b>'+esc(u)+'</b> belum memiliki kata sandi. Masuk sekali lewat tombol <b>Masuk Cepat</b>, lalu buat kata sandi Anda lewat tombol <b>Ganti Sandi</b>.</div>';
+    else errEl.innerHTML='<div class="err">'+(pesanServer?esc(pesanServer)+" ":"")+'Nama pengguna atau kata sandi salah. Coba lagi, atau gunakan tombol Masuk Cepat.</div>';
+  }
+  if(cfgTerpusat() && p){
+    errEl.innerHTML='<div class="err" style="background:var(--chip);color:var(--ink);border-color:var(--line)">Menghubungi server sekolah…</div>';
+    loginServer(u,p).then(function(j){
+      if(j.ditolak){ gagalLokal(j.ditolak); return; }
+      sesiDariServer(j);
+      aktifkanTerpusat().then(function(ok){
+        errEl.innerHTML="";
+        showApp();
+        if(ok) toast("Terhubung ke server sekolah — MODE TERPUSAT aktif.");
+        else tampilBanner("ℹ️ Login server berhasil, tetapi data server belum dapat ditarik. Aplikasi berjalan dengan data perangkat ini (MODE LOKAL).");
+      }).catch(function(e){
+        errEl.innerHTML=""; showApp();
+        matikanTerpusat(e.message||"get_db gagal");
+      });
+    }).catch(function(){ gagalLokal(""); });
+    return;
+  }
+  var hasil=doLogin(u,p);
+  if(hasil==="ok") showApp();
+  else if(hasil==="belum") errEl.innerHTML='<div class="err">Akun <b>'+esc(u)+'</b> belum memiliki kata sandi. Masuk sekali lewat tombol <b>Masuk Cepat</b>, lalu buat kata sandi Anda lewat tombol <b>Ganti Sandi</b>.</div>';
+  else errEl.innerHTML='<div class="err">Nama pengguna atau kata sandi salah. Coba lagi, atau gunakan tombol Masuk Cepat.</div>';
+}
+document.getElementById("btnLogin").addEventListener("click", attemptLogin);
+document.getElementById("liPass").addEventListener("keydown", function(e){ if(e.key==="Enter") attemptLogin(); });
+document.querySelectorAll("[data-demo]").forEach(function(b){ b.addEventListener("click", function(){
+  var peran=b.getAttribute("data-demo");
+  var user = peran==="wakakur" ? "sulis" : (peran==="kepsek" ? "kepsek" : "ririn");
+  var u=findUser(user);
+  if(u){ masukSebagai(u); showApp(); if(!u.passHash) setTimeout(function(){ toast("Selamat datang. Akun ini belum berkata sandi — buat lewat tombol Ganti Sandi di kiri bawah."); },400); }
+  else toast("Akun demo tidak ditemukan.");
+}); });
+document.getElementById("btnLogout").addEventListener("click", showLogin);
+document.getElementById("btnGantiPass").addEventListener("click", formGantiPass);
+document.getElementById("btnMenu").addEventListener("click", function(){ document.getElementById("sidebar").classList.toggle("open"); });
+if(SESI){
+  var valid = DB.users.some(function(u){ return u.username===SESI.username; });
+  if(valid) showApp(); else showLogin();
+}
+</script>
+</body>
+</html>
